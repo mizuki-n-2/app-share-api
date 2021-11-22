@@ -1,18 +1,19 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"os"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"github.com/joho/godotenv"
 
-	"app-share-api/interface/handler"
-	"app-share-api/infra"
-	"app-share-api/usecase"
 	"app-share-api/domain/model"
+	"app-share-api/infra"
+	"app-share-api/interface/handler"
+	"app-share-api/usecase"
 )
 
 var db *gorm.DB
@@ -26,7 +27,7 @@ func initDB() *gorm.DB {
 		dbPort = os.Getenv("DB_PORT")
 		dbName = os.Getenv("DB_NAME")
 	)
-	
+
 	dsn := dbUser + ":" + dbPass + "@tcp(" + dbHost + ":" + dbPort + ")/" + dbName + "?charset=utf8&parseTime=True&loc=Local"
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -39,6 +40,11 @@ func initDB() *gorm.DB {
 }
 
 func main() {
+	err := godotenv.Load(".env")
+	if err != nil {
+		fmt.Printf("読み込み出来ませんでした: %v", err)
+	} 
+
 	db = initDB()
 
 	e := echo.New()
