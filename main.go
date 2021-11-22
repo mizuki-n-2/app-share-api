@@ -46,9 +46,9 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	postRepository := infra.InitPostRepository(db)
-	postUsecase := usecase.InitPostUsecase(postRepository)
-	postHandler := handler.InitPostHandler(postUsecase)
+	postRepository := infra.NewPostRepository(db)
+	postUsecase := usecase.NewPostUsecase(postRepository)
+	postHandler := handler.NewPostHandler(postUsecase)
 
 	handler.InitRouting(e, postHandler)
 	e.Logger.Fatal(e.Start(":8080"))
