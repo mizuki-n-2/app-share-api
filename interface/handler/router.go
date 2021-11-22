@@ -5,9 +5,10 @@ import (
 )
 
 func InitRouting(e *echo.Echo, postHandler PostHandler) {
-	e.GET("/posts", postHandler.GetPosts())
-	e.GET("/posts/:id", postHandler.GetPost())
-	e.POST("/posts", postHandler.CreatePost())
-	e.PATCH("/posts/:id", postHandler.UpdatePost())
-	e.DELETE("/posts/:id", postHandler.DeletePost())
+	api := e.Group("/api")
+	// api.GET("/posts", postHandler.GetPosts())
+	// api.GET("/posts/:id", postHandler.GetPost())
+	api.POST("/posts", postHandler.CreatePost())
+	// api.PATCH("/posts/:id", postHandler.UpdatePost())
+	// api.DELETE("/posts/:id", postHandler.DeletePost())
 }

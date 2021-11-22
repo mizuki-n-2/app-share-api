@@ -15,3 +15,11 @@ type postRepository struct {
 func NewPostRepository(db *gorm.DB) repository.PostRepository {
 	return &postRepository{db: db}
 }
+
+func (pr *postRepository) Store(post *model.Post) (*model.Post, error) {
+	if err := pr.db.Create(&post).Error; err != nil {
+		return nil, err
+	}
+
+	return post, nil
+}

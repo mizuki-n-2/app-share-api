@@ -5,5 +5,5 @@ import (
 )
 
 type PostRepository interface {
-	
+	Store(post *model.Post) (*model.Post, error)
 }
