@@ -2,15 +2,16 @@ package model
 
 import (
 	"errors"
+	"time"
 )
 
 type Post struct {
-	ID        int   `json:"id"`
-	UserID    int   `json:"user_id"`
-	Title     string `json:"title"`
-	Content   string `json:"content"`
-	CreatedAt string `json:"created_at"`
-	UpdatedAt string `json:"updated_at"`
+	ID        int       `json:"id"`
+	UserID    int       `json:"user_id"`
+	Title     string    `json:"title"`
+	Content   string    `json:"content"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 // postのコンストラクタ
@@ -20,10 +21,21 @@ func NewPost(userID int, title, content string) (*Post, error) {
 	}
 
 	post := &Post{
-		UserID:    userID,
-		Title:     title,
-		Content:   content,
+		UserID:  userID,
+		Title:   title,
+		Content: content,
 	}
 
 	return post, nil
+}
+
+func (post *Post) Update(title, content string) error {
+	if title == "" {
+		return errors.New("titleを入力してください")
+	}
+
+	post.Title = title
+	post.Content = content
+
+	return nil
 }
