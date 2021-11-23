@@ -35,6 +35,7 @@ func initDB() *gorm.DB {
 	}
 
 	db.AutoMigrate(model.Post{})
+	db.AutoMigrate(model.User{})
 
 	return db
 }
@@ -56,6 +57,10 @@ func main() {
 	postUsecase := usecase.NewPostUsecase(postRepository)
 	postHandler := handler.NewPostHandler(postUsecase)
 
-	handler.InitRouting(e, postHandler)
+	userRepository := infra.NewUserRepository(db)
+	userUsecase := usecase.NewUserUsecase(userRepository)
+	userHandler := handler.NewUserHandler(userUsecase)
+
+	handler.InitRouting(e, postHandler, userHandler)
 	e.Logger.Fatal(e.Start(":8080"))
 }
