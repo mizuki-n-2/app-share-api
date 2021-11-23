@@ -2,8 +2,9 @@ package usecase
 
 import (
 	"app-share-api/domain/repository"
-	"os"
 
+	"os"
+	"time"
 	"errors"
 
 	"github.com/golang-jwt/jwt"
@@ -55,7 +56,7 @@ func CreateToken(userID int) (string, error) {
 	claims := MyCustomClaims{
 		userID,
 		jwt.StandardClaims{
-			ExpiresAt: 15000,
+			ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
 			Issuer:    "app_share",
 		},
 	}
