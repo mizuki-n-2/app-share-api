@@ -1,7 +1,10 @@
 package handler
 
 import (
+	"os"
+
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 func InitRouting(e *echo.Echo, postHandler PostHandler, userHandler UserHandler, authHandler AuthHandler) {
@@ -15,6 +18,7 @@ func InitRouting(e *echo.Echo, postHandler PostHandler, userHandler UserHandler,
 
 	// 認証あり
 	auth := api.Group("/auth")
+	auth.Use(middleware.JWT([]byte(os.Getenv("JWT_SIGNING_KEY"))))
 	auth.POST("/posts", postHandler.CreatePost())
 	auth.PATCH("/posts/:id", postHandler.UpdatePost())
 	auth.DELETE("/posts/:id", postHandler.DeletePost())
