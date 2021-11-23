@@ -42,3 +42,12 @@ func (ur *userRepository) FindByID(id int) (*model.User, error) {
 
 	return user, nil
 }
+
+func (ur *userRepository) FindByEmail(email string) (*model.User, error) {
+	user := &model.User{Email: email}
+	if err := ur.db.Where("email = ?", email).First(&user).Error; err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}

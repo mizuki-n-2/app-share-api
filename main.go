@@ -61,6 +61,9 @@ func main() {
 	userUsecase := usecase.NewUserUsecase(userRepository)
 	userHandler := handler.NewUserHandler(userUsecase)
 
-	handler.InitRouting(e, postHandler, userHandler)
+	authUsecase := usecase.NewAuthUsecase(userRepository)
+	authHandler := handler.NewAuthHandler(authUsecase)
+
+	handler.InitRouting(e, postHandler, userHandler, authHandler)
 	e.Logger.Fatal(e.Start(":8080"))
 }
