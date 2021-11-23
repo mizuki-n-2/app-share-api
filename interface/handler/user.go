@@ -36,7 +36,6 @@ type responseUser struct {
 	ID        int       `json:"id"`
 	Name      string    `json:"name"`
 	Email     string    `json:"email"`
-	Password  string    `json:"password"`
 	CreatedAt time.Time `json:"created_at"`
 }
 
@@ -56,7 +55,6 @@ func (uh *userHandler) CreateUser() echo.HandlerFunc {
 			ID:        user.ID,
 			Name:      user.Name,
 			Email:     user.Email,
-			Password:  user.Password,
 			CreatedAt: user.CreatedAt,
 		}
 
@@ -80,7 +78,6 @@ func (uh *userHandler) GetUser() echo.HandlerFunc {
 			ID:        user.ID,
 			Name:      user.Name,
 			Email:     user.Email,
-			Password:  user.Password,
 			CreatedAt: user.CreatedAt,
 		}
 
