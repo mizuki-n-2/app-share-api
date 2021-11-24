@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"app-share-api/usecase"
-
+	
 	"github.com/labstack/echo/v4"
 )
 
@@ -52,7 +52,7 @@ func (uh *userHandler) CreateUser() echo.HandlerFunc {
 
 		res := responseUser{
 			ID:        user.ID,
-			Name:      user.Name,
+			Name:      string(user.Name),
 			Email:     user.Email,
 			CreatedAt: user.CreatedAt,
 		}
@@ -75,7 +75,7 @@ func (uh *userHandler) GetUser() echo.HandlerFunc {
 
 		res := responseUser{
 			ID:        user.ID,
-			Name:      user.Name,
+			Name:      string(user.Name),
 			Email:     user.Email,
 			CreatedAt: user.CreatedAt,
 		}

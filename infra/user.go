@@ -1,9 +1,6 @@
 package infra
 
 import (
-	"time"
-
-	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 
 	"app-share-api/domain/model/user"
@@ -19,13 +16,6 @@ func NewUserRepository(db *gorm.DB) repository.UserRepository {
 }
 
 func (ur *userRepository) Store(user *user.User) (*user.User, error) {
-	user.CreatedAt = time.Now()
-	hashedPass, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
-	if err != nil {
-		return nil, err
-	}
-
-	user.Password = string(hashedPass)
 	if err := ur.db.Create(&user).Error; err != nil {
 		return nil, err
 	}
