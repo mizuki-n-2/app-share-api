@@ -25,11 +25,6 @@ func NewLikeHandler(likeUsecase usecase.LikeUsecase) LikeHandler {
 	}
 }
 
-type requestLike struct {
-	UserID int `json:"user_id"`
-	PostID int `json:"post_id"`
-}
-
 type responseLike struct {
 	ID        int       `json:"id"`
 	UserID    int       `json:"user_id"`
@@ -39,12 +34,14 @@ type responseLike struct {
 
 func (lh *likeHandler) Like() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		var req requestLike
-		if err := c.Bind(&req); err != nil {
+		postID, err := strconv.Atoi(c.Param("post_id"))
+		if err != nil {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
 
-		like, err := lh.likeUsecase.LikePost(req.UserID, req.PostID)
+		userID := GetUserIDFromToken(c)
+
+		like, err := lh.likeUsecase.LikePost(userID, postID)
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
@@ -67,7 +64,14 @@ func (lh *likeHandler) Unlike() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
 
-		err = lh.likeUsecase.UnlikePost(id)
+		postID, err := strconv.Atoi(c.Param("post_id"))
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, err.Error())
+		}
+
+		userID := GetUserIDFromToken(c)
+
+		err = lh.likeUsecase.UnlikePost(id, userID, postID)
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}

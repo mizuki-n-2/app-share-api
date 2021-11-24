@@ -3,13 +3,15 @@ package usecase
 import (
 	"app-share-api/domain/model"
 	"app-share-api/domain/repository"
+
+	"errors"
 )
 
 type CommentUsecase interface {
 	CreateComment(userID, postID int, content string) (*model.Comment, error)
 	GetComments(postID int) ([]*model.Comment, error)
-	UpdateComment(ID int, content string) (*model.Comment, error)
-	DeleteComment(ID int) error
+	UpdateComment(ID, userID, postID int, content string) (*model.Comment, error)
+	DeleteComment(ID, userID, postID int) error
 }
 
 type commentUsecase struct {
@@ -45,10 +47,18 @@ func (cu *commentUsecase) GetComments(postID int) ([]*model.Comment, error) {
 	return comments, nil
 }
 
-func (cu *commentUsecase) UpdateComment(ID int, content string) (*model.Comment, error) {
+func (cu *commentUsecase) UpdateComment(ID, userID, postID int, content string) (*model.Comment, error) {
 	comment, err := cu.commentRepository.FindByID(ID)
 	if err != nil {
 		return nil, err
+	}
+
+	if comment.PostID != postID {
+		return nil, errors.New("対応する投稿が正しくありません")
+	}
+
+	if comment.UserID != userID {
+		return nil, errors.New("権限がありません")
 	}
 
 	comment.Update(content)
@@ -61,10 +71,18 @@ func (cu *commentUsecase) UpdateComment(ID int, content string) (*model.Comment,
 	return updatedComment, nil
 }
 
-func (cu *commentUsecase) DeleteComment(ID int) error {
-	_, err := cu.commentRepository.FindByID(ID)
+func (cu *commentUsecase) DeleteComment(ID, userID, postID int) error {
+	comment, err := cu.commentRepository.FindByID(ID)
 	if err != nil {
 		return err
+	}
+
+	if comment.PostID != postID {
+		return errors.New("対応する投稿が正しくありません")
+	}
+
+	if comment.UserID != userID {
+		return errors.New("権限がありません")
 	}
 
 	err = cu.commentRepository.Delete(ID)

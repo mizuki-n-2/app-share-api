@@ -3,14 +3,16 @@ package usecase
 import (
 	"app-share-api/domain/model"
 	"app-share-api/domain/repository"
+
+	"errors"
 )
 
 type PostUsecase interface {
 	CreatePost(userID int, title, content string) (*model.Post, error)
 	GetPost(ID int) (*model.Post, error)
 	GetAllPosts() ([]*model.Post, error)
-	UpdatePost(ID int, title, content string) (*model.Post, error)
-	DeletePost(ID int) error
+	UpdatePost(ID, userID int, title, content string) (*model.Post, error)
+	DeletePost(ID, userID int) error
 }
 
 type postUsecase struct {
@@ -55,10 +57,14 @@ func (pu *postUsecase) GetAllPosts() ([]*model.Post, error) {
 	return posts, nil
 }
 
-func (pu *postUsecase) UpdatePost(ID int, title, content string) (*model.Post, error) {
+func (pu *postUsecase) UpdatePost(ID, userID int, title, content string) (*model.Post, error) {
 	post, err := pu.postRepository.FindByID(ID)
 	if err != nil {
 		return nil, err
+	}
+
+	if post.UserID != userID {
+		return nil, errors.New("権限がありません")
 	}
 
 	post.Update(title, content)
@@ -71,10 +77,14 @@ func (pu *postUsecase) UpdatePost(ID int, title, content string) (*model.Post, e
 	return updatedPost, nil
 }
 
-func (pu *postUsecase) DeletePost(ID int) error {
-	_, err := pu.postRepository.FindByID(ID)
+func (pu *postUsecase) DeletePost(ID, userID int) error {
+	post, err := pu.postRepository.FindByID(ID)
 	if err != nil {
 		return err
+	}
+
+	if post.UserID != userID {
+		return errors.New("権限がありません")
 	}
 
 	err = pu.postRepository.Delete(ID)

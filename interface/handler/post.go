@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"app-share-api/usecase"
-
+	
 	"github.com/labstack/echo/v4"
 )
 
@@ -29,7 +29,6 @@ func NewPostHandler(postUsecase usecase.PostUsecase) PostHandler {
 }
 
 type requestPost struct {
-	UserID  int    `json:"user_id"`
 	Title   string `json:"title"`
 	Content string `json:"content"`
 }
@@ -45,12 +44,14 @@ type responsePost struct {
 
 func (ph *postHandler) CreatePost() echo.HandlerFunc {
 	return func(c echo.Context) error {
+		userID := GetUserIDFromToken(c)
+
 		var req requestPost
 		if err := c.Bind(&req); err != nil {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
 
-		post, err := ph.postUsecase.CreatePost(req.UserID, req.Title, req.Content)
+		post, err := ph.postUsecase.CreatePost(userID, req.Title, req.Content)
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
@@ -123,12 +124,14 @@ func (ph *postHandler) UpdatePost() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
 
+		userID := GetUserIDFromToken(c)
+
 		var req requestPost
 		if err := c.Bind(&req); err != nil {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
 
-		post, err := ph.postUsecase.UpdatePost(id, req.Title, req.Content)
+		post, err := ph.postUsecase.UpdatePost(id, userID, req.Title, req.Content)
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
@@ -153,7 +156,9 @@ func (ph *postHandler) DeletePost() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
 
-		err = ph.postUsecase.DeletePost(id)
+		userID := GetUserIDFromToken(c)
+
+		err = ph.postUsecase.DeletePost(id, userID)
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}

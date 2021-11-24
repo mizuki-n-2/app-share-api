@@ -3,11 +3,13 @@ package usecase
 import (
 	"app-share-api/domain/model"
 	"app-share-api/domain/repository"
+
+	"errors"
 )
 
 type LikeUsecase interface {
 	LikePost(userID, postID int) (*model.Like, error)
-	UnlikePost(ID int) error
+	UnlikePost(ID, userID, postID int) error
 }
 
 type likeUsecase struct {
@@ -34,10 +36,18 @@ func (lu *likeUsecase) LikePost(userID, postID int) (*model.Like, error) {
 	return createdLike, nil
 }
 
-func (lu *likeUsecase) UnlikePost(ID int) error {
-	_, err := lu.likeRepository.FindByID(ID)
+func (lu *likeUsecase) UnlikePost(ID, userID, postID int) error {
+	like, err := lu.likeRepository.FindByID(ID)
 	if err != nil {
 		return err
+	}
+	
+	if like.PostID != postID {
+		return errors.New("対応する投稿が正しくありません")
+	}
+
+	if like.UserID != userID {
+		return errors.New("権限がありません")
 	}
 
 	err = lu.likeRepository.Delete(ID)

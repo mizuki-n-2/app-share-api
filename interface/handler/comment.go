@@ -28,7 +28,6 @@ func NewCommentHandler(commentUsecase usecase.CommentUsecase) CommentHandler {
 }
 
 type requestComment struct {
-	UserID  int    `json:"user_id"`
 	Content string `json:"content"`
 }
 
@@ -48,12 +47,14 @@ func (ch *commentHandler) CreateComment() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
 
+		userID := GetUserIDFromToken(c)
+
 		var req requestComment
 		if err := c.Bind(&req); err != nil {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
 
-		comment, err := ch.commentUsecase.CreateComment(req.UserID, postID, req.Content)
+		comment, err := ch.commentUsecase.CreateComment(userID, postID, req.Content)
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
@@ -106,12 +107,19 @@ func (ch *commentHandler) UpdateComment() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
 
+		postID, err := strconv.Atoi(c.Param("post_id"))
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, err.Error())
+		}
+
+		userID := GetUserIDFromToken(c)
+
 		var req requestComment
 		if err := c.Bind(&req); err != nil {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
 
-		comment, err := ch.commentUsecase.UpdateComment(id, req.Content)
+		comment, err := ch.commentUsecase.UpdateComment(id, userID, postID, req.Content)
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
@@ -136,7 +144,14 @@ func (ch *commentHandler) DeleteComment() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
 
-		err = ch.commentUsecase.DeleteComment(id)
+		postID, err := strconv.Atoi(c.Param("post_id"))
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, err.Error())
+		}
+
+		userID := GetUserIDFromToken(c)
+
+		err = ch.commentUsecase.DeleteComment(id, userID, postID)
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
