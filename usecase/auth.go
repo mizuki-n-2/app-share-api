@@ -2,13 +2,12 @@ package usecase
 
 import (
 	"app-share-api/domain/repository"
+	"app-share-api/domain/model/user"
 
 	"os"
 	"time"
-	"errors"
 
 	"github.com/golang-jwt/jwt"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthUsecase interface {
@@ -31,14 +30,18 @@ type MyCustomClaims struct {
 }
 
 func (au *authUsecase) Login(email, password string) (string, error) {
-	user, err := au.userRepository.FindByEmail(email)
+	newEmail, err := user.NewEmail(email)
+	if err != nil {
+		return "", err
+	}
+	user, err := au.userRepository.FindByEmail(*newEmail)
 	if err != nil {
 		return "", err
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	err = user.Password.Compare(password)
 	if err != nil {
-		return "", errors.New("パスワードが違います")
+		return "", err
 	}
 
 	token, err := CreateToken(user.ID)

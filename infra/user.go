@@ -32,7 +32,7 @@ func (ur *userRepository) FindByID(ID int) (*user.User, error) {
 	return user, nil
 }
 
-func (ur *userRepository) FindByEmail(email string) (*user.User, error) {
+func (ur *userRepository) FindByEmail(email user.Email) (*user.User, error) {
 	user := &user.User{Email: email}
 	if err := ur.db.Where("email = ?", email).First(&user).Error; err != nil {
 		return nil, err

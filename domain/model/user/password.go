@@ -6,7 +6,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type Password []byte
+type Password string
 
 func NewPassword(s string) (*Password, error) {
 	if utf8.RuneCountInString(s) < 8 {
@@ -21,4 +21,13 @@ func NewPassword(s string) (*Password, error) {
 	password := Password(hashedPassword)
 
 	return &password, nil
+}
+
+func (p *Password) Compare(s string) error {
+	err := bcrypt.CompareHashAndPassword([]byte(*p), []byte(s))
+	if err != nil {
+		return errors.New("パスワードが違います")
+	}
+	
+	return nil
 }
