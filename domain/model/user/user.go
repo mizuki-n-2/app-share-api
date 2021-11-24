@@ -1,22 +1,24 @@
 package user
 
 import (
-	"time"
 	"errors"
+	"time"
 )
 
 type User struct {
 	ID        int       `json:"id"`
-	Name      string    `json:"name"`
+	Name      Name      `json:"name"`
 	Email     string    `json:"email"`
 	Password  string    `json:"password"`
 	CreatedAt time.Time `json:"created_at"`
 }
 
 func NewUser(name, email, password string) (*User, error) {
-	if name == "" {
-		return nil, errors.New("nameを入力してください")
+	newName, err := NewName(name)
+	if err != nil {
+		return nil, err
 	}
+
 	if email == "" {
 		return nil, errors.New("emailを入力してください")
 	}
@@ -25,9 +27,9 @@ func NewUser(name, email, password string) (*User, error) {
 	}
 
 	user := &User{
-		Name:      name,
-		Email:     email,
-		Password:  password,
+		Name:     *newName,
+		Email:    email,
+		Password: password,
 	}
 
 	return user, nil
