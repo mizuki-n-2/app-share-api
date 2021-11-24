@@ -17,7 +17,6 @@ type postUsecase struct {
 	postRepository repository.PostRepository
 }
 
-// postUsecaseのコンストラクタ
 func NewPostUsecase(postRepository repository.PostRepository) PostUsecase {
 	return &postUsecase{
 		postRepository: postRepository,
@@ -73,7 +72,12 @@ func (pu *postUsecase) UpdatePost(ID int, title, content string) (*model.Post, e
 }
 
 func (pu *postUsecase) DeletePost(ID int) error {
-	err := pu.postRepository.Delete(ID)
+	_, err := pu.postRepository.FindByID(ID)
+	if err != nil {
+		return err
+	}
+
+	err = pu.postRepository.Delete(ID)
 	if err != nil {
 		return err
 	}

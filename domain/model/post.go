@@ -14,7 +14,6 @@ type Post struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-// postのコンストラクタ
 func NewPost(userID int, title, content string) (*Post, error) {
 	if title == "" {
 		return nil, errors.New("titleを入力してください")

@@ -16,7 +16,6 @@ type authHandler struct {
 	authUsecase usecase.AuthUsecase
 }
 
-// authHandlerのコンストラクタ
 func NewAuthHandler(authUsecase usecase.AuthUsecase) AuthHandler {
 	return &authHandler{
 		authUsecase: authUsecase,

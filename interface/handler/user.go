@@ -19,7 +19,6 @@ type userHandler struct {
 	userUsecase usecase.UserUsecase
 }
 
-// userHandlerのコンストラクタ
 func NewUserHandler(userUsecase usecase.UserUsecase) UserHandler {
 	return &userHandler{
 		userUsecase: userUsecase,

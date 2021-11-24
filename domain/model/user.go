@@ -13,7 +13,6 @@ type User struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-// userのコンストラクタ
 func NewUser(name, email, password string) (*User, error) {
 	if name == "" {
 		return nil, errors.New("nameを入力してください")

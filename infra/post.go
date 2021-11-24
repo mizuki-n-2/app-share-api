@@ -13,7 +13,6 @@ type postRepository struct {
 	db *gorm.DB
 }
 
-// postRepositoryのコンストラクタ
 func NewPostRepository(db *gorm.DB) repository.PostRepository {
 	return &postRepository{db: db}
 }

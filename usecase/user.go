@@ -14,7 +14,6 @@ type userUsecase struct {
 	userRepository repository.UserRepository
 }
 
-// userUsecaseのコンストラクタ
 func NewUserUsecase(userRepository repository.UserRepository) UserUsecase {
 	return &userUsecase{
 		userRepository: userRepository,

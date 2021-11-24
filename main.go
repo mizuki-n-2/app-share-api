@@ -57,6 +57,10 @@ func main() {
 	postUsecase := usecase.NewPostUsecase(postRepository)
 	postHandler := handler.NewPostHandler(postUsecase)
 
+	likeRepository := infra.NewLikeRepository(db)
+	likeUsecase := usecase.NewLikeUsecase(likeRepository)
+	likeHandler := handler.NewLikeHandler(likeUsecase)
+
 	userRepository := infra.NewUserRepository(db)
 	userUsecase := usecase.NewUserUsecase(userRepository)
 	userHandler := handler.NewUserHandler(userUsecase)
@@ -64,6 +68,6 @@ func main() {
 	authUsecase := usecase.NewAuthUsecase(userRepository)
 	authHandler := handler.NewAuthHandler(authUsecase)
 
-	handler.InitRouting(e, postHandler, userHandler, authHandler)
+	handler.InitRouting(e, postHandler, likeHandler, userHandler, authHandler)
 	e.Logger.Fatal(e.Start(":8080"))
 }

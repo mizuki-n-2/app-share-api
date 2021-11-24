@@ -14,7 +14,6 @@ type userRepository struct {
 	db *gorm.DB
 }
 
-// userRepositoryのコンストラクタ
 func NewUserRepository(db *gorm.DB) repository.UserRepository {
 	return &userRepository{db: db}
 }

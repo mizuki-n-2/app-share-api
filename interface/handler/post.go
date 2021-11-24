@@ -22,7 +22,6 @@ type postHandler struct {
 	postUsecase usecase.PostUsecase
 }
 
-// postHandlerのコンストラクタ
 func NewPostHandler(postUsecase usecase.PostUsecase) PostHandler {
 	return &postHandler{
 		postUsecase: postUsecase,
