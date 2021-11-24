@@ -1,16 +1,16 @@
 package usecase
 
 import (
-	"app-share-api/domain/model"
+	"app-share-api/domain/model/comment"
 	"app-share-api/domain/repository"
 
 	"errors"
 )
 
 type CommentUsecase interface {
-	CreateComment(userID, postID int, content string) (*model.Comment, error)
-	GetComments(postID int) ([]*model.Comment, error)
-	UpdateComment(ID, userID, postID int, content string) (*model.Comment, error)
+	CreateComment(userID, postID int, content string) (*comment.Comment, error)
+	GetComments(postID int) ([]*comment.Comment, error)
+	UpdateComment(ID, userID, postID int, content string) (*comment.Comment, error)
 	DeleteComment(ID, userID, postID int) error
 }
 
@@ -24,8 +24,8 @@ func NewCommentUsecase(commentRepository repository.CommentRepository) CommentUs
 	}
 }
 
-func (cu *commentUsecase) CreateComment(userID, postID int, content string) (*model.Comment, error) {
-	comment, err := model.NewComment(userID, postID, content)
+func (cu *commentUsecase) CreateComment(userID, postID int, content string) (*comment.Comment, error) {
+	comment, err := comment.NewComment(userID, postID, content)
 	if err != nil {
 		return nil, err
 	}
@@ -38,7 +38,7 @@ func (cu *commentUsecase) CreateComment(userID, postID int, content string) (*mo
 	return createdComment, nil
 }
 
-func (cu *commentUsecase) GetComments(postID int) ([]*model.Comment, error) {
+func (cu *commentUsecase) GetComments(postID int) ([]*comment.Comment, error) {
 	comments, err := cu.commentRepository.FindByPostID(postID)
 	if err != nil {
 		return nil, err
@@ -47,7 +47,7 @@ func (cu *commentUsecase) GetComments(postID int) ([]*model.Comment, error) {
 	return comments, nil
 }
 
-func (cu *commentUsecase) UpdateComment(ID, userID, postID int, content string) (*model.Comment, error) {
+func (cu *commentUsecase) UpdateComment(ID, userID, postID int, content string) (*comment.Comment, error) {
 	comment, err := cu.commentRepository.FindByID(ID)
 	if err != nil {
 		return nil, err

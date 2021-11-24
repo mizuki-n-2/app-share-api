@@ -6,7 +6,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 
-	"app-share-api/domain/model"
+	"app-share-api/domain/model/user"
 	"app-share-api/domain/repository"
 )
 
@@ -18,7 +18,7 @@ func NewUserRepository(db *gorm.DB) repository.UserRepository {
 	return &userRepository{db: db}
 }
 
-func (ur *userRepository) Store(user *model.User) (*model.User, error) {
+func (ur *userRepository) Store(user *user.User) (*user.User, error) {
 	user.CreatedAt = time.Now()
 	hashedPass, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
@@ -33,8 +33,8 @@ func (ur *userRepository) Store(user *model.User) (*model.User, error) {
 	return user, nil
 }
 
-func (ur *userRepository) FindByID(ID int) (*model.User, error) {
-	user := &model.User{ID: ID}
+func (ur *userRepository) FindByID(ID int) (*user.User, error) {
+	user := &user.User{ID: ID}
 	if err := ur.db.First(&user).Error; err != nil {
 		return nil, err
 	}
@@ -42,8 +42,8 @@ func (ur *userRepository) FindByID(ID int) (*model.User, error) {
 	return user, nil
 }
 
-func (ur *userRepository) FindByEmail(email string) (*model.User, error) {
-	user := &model.User{Email: email}
+func (ur *userRepository) FindByEmail(email string) (*user.User, error) {
+	user := &user.User{Email: email}
 	if err := ur.db.Where("email = ?", email).First(&user).Error; err != nil {
 		return nil, err
 	}

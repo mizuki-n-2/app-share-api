@@ -1,14 +1,14 @@
 package usecase
 
 import (
-	"app-share-api/domain/model"
+	"app-share-api/domain/model/like"
 	"app-share-api/domain/repository"
 
 	"errors"
 )
 
 type LikeUsecase interface {
-	LikePost(userID, postID int) (*model.Like, error)
+	LikePost(userID, postID int) (*like.Like, error)
 	UnlikePost(ID, userID, postID int) error
 }
 
@@ -22,8 +22,8 @@ func NewLikeUsecase(likeRepository repository.LikeRepository) LikeUsecase {
 	}
 }
 
-func (lu *likeUsecase) LikePost(userID, postID int) (*model.Like, error) {
-	like, err := model.NewLike(userID, postID)
+func (lu *likeUsecase) LikePost(userID, postID int) (*like.Like, error) {
+	like, err := like.NewLike(userID, postID)
 	if err != nil {
 		return nil, err
 	}

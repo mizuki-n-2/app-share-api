@@ -1,13 +1,13 @@
 package usecase
 
 import (
-	"app-share-api/domain/model"
+	"app-share-api/domain/model/user"
 	"app-share-api/domain/repository"
 )
 
 type UserUsecase interface {
-	CreateUser(name, email, password string) (*model.User, error)
-	GetUser(ID int) (*model.User, error)
+	CreateUser(name, email, password string) (*user.User, error)
+	GetUser(ID int) (*user.User, error)
 }
 
 type userUsecase struct {
@@ -20,8 +20,8 @@ func NewUserUsecase(userRepository repository.UserRepository) UserUsecase {
 	}
 }
 
-func (uu *userUsecase) CreateUser(name, email, password string) (*model.User, error) {
-	user, err := model.NewUser(name, email, password)
+func (uu *userUsecase) CreateUser(name, email, password string) (*user.User, error) {
+	user, err := user.NewUser(name, email, password)
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +34,7 @@ func (uu *userUsecase) CreateUser(name, email, password string) (*model.User, er
 	return createdUser, nil
 }
 
-func (uu *userUsecase) GetUser(ID int) (*model.User, error) {
+func (uu *userUsecase) GetUser(ID int) (*user.User, error) {
 	user, err := uu.userRepository.FindByID(ID)
 	if err != nil {
 		return nil, err

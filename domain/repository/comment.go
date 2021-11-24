@@ -1,12 +1,12 @@
 package repository
 
 import (
-	"app-share-api/domain/model"
+	"app-share-api/domain/model/comment"
 )
 
 type CommentRepository interface {
-	Store(comment *model.Comment) (*model.Comment, error)
-	FindByID(ID int) (*model.Comment, error)
-	FindByPostID(postID int) ([]*model.Comment, error)
+	Store(comment *comment.Comment) (*comment.Comment, error)
+	FindByID(ID int) (*comment.Comment, error)
+	FindByPostID(postID int) ([]*comment.Comment, error)
 	Delete(ID int) error
 }

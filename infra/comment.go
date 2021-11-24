@@ -5,7 +5,7 @@ import (
 
 	"gorm.io/gorm"
 
-	"app-share-api/domain/model"
+	"app-share-api/domain/model/comment"
 	"app-share-api/domain/repository"
 )
 
@@ -17,7 +17,7 @@ func NewCommentRepository(db *gorm.DB) repository.CommentRepository {
 	return &commentRepository{db: db}
 }
 
-func (cr *commentRepository) Store(comment *model.Comment) (*model.Comment, error) {
+func (cr *commentRepository) Store(comment *comment.Comment) (*comment.Comment, error) {
 	if comment.ID != 0 {
 		comment.UpdatedAt = time.Now()
 		if err := cr.db.Save(&comment).Error; err != nil {
@@ -34,8 +34,8 @@ func (cr *commentRepository) Store(comment *model.Comment) (*model.Comment, erro
 	return comment, nil
 }
 
-func (cr *commentRepository) FindByID(ID int) (*model.Comment, error) {
-	comment := &model.Comment{ID: ID}
+func (cr *commentRepository) FindByID(ID int) (*comment.Comment, error) {
+	comment := &comment.Comment{ID: ID}
 	if err := cr.db.First(&comment).Error; err != nil {
 		return nil, err
 	}
@@ -43,8 +43,8 @@ func (cr *commentRepository) FindByID(ID int) (*model.Comment, error) {
 	return comment, nil
 }
 
-func (cr *commentRepository) FindByPostID(postID int) ([]*model.Comment, error) {
-	var comments []*model.Comment
+func (cr *commentRepository) FindByPostID(postID int) ([]*comment.Comment, error) {
+	var comments []*comment.Comment
 	if err := cr.db.Where("post_id = ?", postID).Find(&comments).Error; err != nil {
 		return nil, err
 	}
@@ -53,7 +53,7 @@ func (cr *commentRepository) FindByPostID(postID int) ([]*model.Comment, error) 
 }
 
 func (cr *commentRepository) Delete(ID int) error {
-	comment := &model.Comment{ID: ID}
+	comment := &comment.Comment{ID: ID}
 	if err := cr.db.Delete(&comment).Error; err != nil {
 		return err
 	}
