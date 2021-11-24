@@ -26,8 +26,8 @@ func (lr *likeRepository) Store(like *model.Like) (*model.Like, error) {
 	return like, nil
 }
 
-func (lr *likeRepository) FindByID(id int) (*model.Like, error) {
-	like := &model.Like{ID: id}
+func (lr *likeRepository) FindByID(ID int) (*model.Like, error) {
+	like := &model.Like{ID: ID}
 	if err := lr.db.First(&like).Error; err != nil {
 		return nil, err
 	}
@@ -35,8 +35,8 @@ func (lr *likeRepository) FindByID(id int) (*model.Like, error) {
 	return like, nil
 }
 
-func (lr *likeRepository) Delete(id int) error {
-	like := &model.Like{ID: id}
+func (lr *likeRepository) Delete(ID int) error {
+	like := &model.Like{ID: ID}
 	if err := lr.db.Delete(&like).Error; err != nil {
 		return err
 	}

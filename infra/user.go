@@ -33,8 +33,8 @@ func (ur *userRepository) Store(user *model.User) (*model.User, error) {
 	return user, nil
 }
 
-func (ur *userRepository) FindByID(id int) (*model.User, error) {
-	user := &model.User{ID: id}
+func (ur *userRepository) FindByID(ID int) (*model.User, error) {
+	user := &model.User{ID: ID}
 	if err := ur.db.First(&user).Error; err != nil {
 		return nil, err
 	}
