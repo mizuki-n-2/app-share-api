@@ -8,6 +8,7 @@ import (
 	"github.com/joho/godotenv"
 
 	"app-share-api/infra"
+	"app-share-api/infra/repositoryImpl"
 	"app-share-api/interface/handler"
 	"app-share-api/usecase"
 )
@@ -25,19 +26,19 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	postRepository := infra.NewPostRepository(db)
+	postRepository := repositoryImpl.NewPostRepository(db)
 	postUsecase := usecase.NewPostUsecase(postRepository)
 	postHandler := handler.NewPostHandler(postUsecase)
 
-	likeRepository := infra.NewLikeRepository(db)
+	likeRepository := repositoryImpl.NewLikeRepository(db)
 	likeUsecase := usecase.NewLikeUsecase(likeRepository)
 	likeHandler := handler.NewLikeHandler(likeUsecase)
 
-	commentRepository := infra.NewCommentRepository(db)
+	commentRepository := repositoryImpl.NewCommentRepository(db)
 	commentUsecase := usecase.NewCommentUsecase(commentRepository)
 	commentHandler := handler.NewCommentHandler(commentUsecase)
 
-	userRepository := infra.NewUserRepository(db)
+	userRepository := repositoryImpl.NewUserRepository(db)
 	userUsecase := usecase.NewUserUsecase(userRepository)
 	userHandler := handler.NewUserHandler(userUsecase)
 
