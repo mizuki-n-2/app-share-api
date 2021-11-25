@@ -9,8 +9,8 @@ import (
 type Password string
 
 func NewPassword(s string) (*Password, error) {
-	if utf8.RuneCountInString(s) < 8 {
-		return nil, errors.New("passwordは8文字以上にしてください")
+	if utf8.RuneCountInString(s) < 8 || utf8.RuneCountInString(s) > 30 {
+		return nil, errors.New("passwordは8文字以上30文字以下にしてください")
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(s), bcrypt.DefaultCost)

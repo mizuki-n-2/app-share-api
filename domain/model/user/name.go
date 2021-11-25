@@ -8,8 +8,8 @@ import (
 type Name string
 
 func NewName(s string) (*Name, error) {
-	if utf8.RuneCountInString(s) <= 0 || utf8.RuneCountInString(s) > 10 {
-		return nil, errors.New("nameは1文字以上10文字以下にしてください")
+	if utf8.RuneCountInString(s) < 1 || utf8.RuneCountInString(s) > 10 {
+		return nil, errors.New("nameは2文字以上10文字以下にしてください")
 	}
 
 	name := Name(s)
