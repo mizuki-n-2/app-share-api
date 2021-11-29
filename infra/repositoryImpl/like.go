@@ -1,11 +1,9 @@
 package repositoryImpl
 
 import (
-	"time"
-
 	"gorm.io/gorm"
 
-	"app-share-api/domain/model/like"
+	"app-share-api/domain/model"
 	"app-share-api/domain/repository"
 )
 
@@ -17,8 +15,7 @@ func NewLikeRepository(db *gorm.DB) repository.LikeRepository {
 	return &likeRepository{db: db}
 }
 
-func (lr *likeRepository) Store(like *like.Like) (*like.Like, error) {
-	like.CreatedAt = time.Now()
+func (lr *likeRepository) Store(like *model.Like) (*model.Like, error) {
 	if err := lr.db.Create(&like).Error; err != nil {
 		return nil, err
 	}
@@ -26,8 +23,8 @@ func (lr *likeRepository) Store(like *like.Like) (*like.Like, error) {
 	return like, nil
 }
 
-func (lr *likeRepository) FindByID(ID int) (*like.Like, error) {
-	like := &like.Like{ID: ID}
+func (lr *likeRepository) FindByID(ID string) (*model.Like, error) {
+	like := &model.Like{ID: ID}
 	if err := lr.db.First(&like).Error; err != nil {
 		return nil, err
 	}
@@ -35,8 +32,8 @@ func (lr *likeRepository) FindByID(ID int) (*like.Like, error) {
 	return like, nil
 }
 
-func (lr *likeRepository) Delete(ID int) error {
-	like := &like.Like{ID: ID}
+func (lr *likeRepository) Delete(ID string) error {
+	like := &model.Like{ID: ID}
 	if err := lr.db.Delete(&like).Error; err != nil {
 		return err
 	}

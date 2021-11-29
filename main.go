@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 
+	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/joho/godotenv"
 
 	"app-share-api/infra"
 	"app-share-api/infra/repositoryImpl"
@@ -25,6 +25,8 @@ func main() {
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+
+	e.Static("/", "static")
 
 	postRepository := repositoryImpl.NewPostRepository(db)
 	postUsecase := usecase.NewPostUsecase(postRepository)

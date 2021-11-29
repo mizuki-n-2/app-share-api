@@ -5,9 +5,9 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-func GetUserIDFromToken(c echo.Context) int {
+func GetUserIDFromToken(c echo.Context) string {
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
-	userID := int(claims["user_id"].(float64))
+	userID := claims["user_id"].(string)
 	return userID
 }

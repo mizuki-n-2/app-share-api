@@ -1,12 +1,16 @@
 package handler
 
 import (
+	"io"
 	"net/http"
+	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"app-share-api/usecase"
-	
+
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 )
 
@@ -15,6 +19,7 @@ type PostHandler interface {
 	GetPost() echo.HandlerFunc
 	GetAllPosts() echo.HandlerFunc
 	UpdatePost() echo.HandlerFunc
+	UploadPostImage() echo.HandlerFunc
 	DeletePost() echo.HandlerFunc
 }
 
@@ -31,13 +36,16 @@ func NewPostHandler(postUsecase usecase.PostUsecase) PostHandler {
 type requestPost struct {
 	Title   string `json:"title"`
 	Content string `json:"content"`
+	AppURL  string `json:"app_url"`
 }
 
 type responsePost struct {
-	ID        int       `json:"id"`
-	UserID    int       `json:"user_id"`
+	ID        string    `json:"id"`
+	UserID    string    `json:"user_id"`
 	Title     string    `json:"title"`
 	Content   string    `json:"content"`
+	Image     string    `json:"image"`
+	AppURL    string    `json:"app_url"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
@@ -46,12 +54,26 @@ func (ph *postHandler) CreatePost() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		userID := GetUserIDFromToken(c)
 
-		var req requestPost
-		if err := c.Bind(&req); err != nil {
-			return c.JSON(http.StatusBadRequest, err.Error())
-		}
+		title := c.FormValue("title")
+		content := c.FormValue("content")
+		appURL := c.FormValue("app_url")
 
-		post, err := ph.postUsecase.CreatePost(userID, req.Title, req.Content)
+		// Multipart form
+		form, err := c.MultipartForm()
+		if err != nil {
+			return err
+		}
+		files := form.File["files"]
+
+		file := files[0]
+
+		uuid := uuid.NewString()
+		image, err := uploadImage(file, uuid)
+		if err != nil {
+			return err
+		}
+		
+		post, err := ph.postUsecase.CreatePost(userID, title, content, image, appURL)
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
@@ -59,8 +81,10 @@ func (ph *postHandler) CreatePost() echo.HandlerFunc {
 		res := responsePost{
 			ID:        post.ID,
 			UserID:    post.UserID,
-			Title:     post.Title,
-			Content:   post.Content,
+			Title:     string(post.Title),
+			Content:   string(post.Content),
+			Image:     post.Image,
+			AppURL:    string(post.AppURL),
 			CreatedAt: post.CreatedAt,
 			UpdatedAt: post.UpdatedAt,
 		}
@@ -71,10 +95,7 @@ func (ph *postHandler) CreatePost() echo.HandlerFunc {
 
 func (ph *postHandler) GetPost() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		id, err := strconv.Atoi(c.Param("id"))
-		if err != nil {
-			return c.JSON(http.StatusBadRequest, err.Error())
-		}
+		id := c.Param("id")
 
 		post, err := ph.postUsecase.GetPost(id)
 		if err != nil {
@@ -84,8 +105,10 @@ func (ph *postHandler) GetPost() echo.HandlerFunc {
 		res := responsePost{
 			ID:        post.ID,
 			UserID:    post.UserID,
-			Title:     post.Title,
-			Content:   post.Content,
+			Title:     string(post.Title),
+			Content:   string(post.Content),
+			Image:     post.Image,
+			AppURL:    string(post.AppURL),
 			CreatedAt: post.CreatedAt,
 			UpdatedAt: post.UpdatedAt,
 		}
@@ -119,10 +142,7 @@ func (ph *postHandler) GetAllPosts() echo.HandlerFunc {
 
 func (ph *postHandler) UpdatePost() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		id, err := strconv.Atoi(c.Param("id"))
-		if err != nil {
-			return c.JSON(http.StatusBadRequest, err.Error())
-		}
+		id := c.Param("id")
 
 		userID := GetUserIDFromToken(c)
 
@@ -131,7 +151,7 @@ func (ph *postHandler) UpdatePost() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
 
-		post, err := ph.postUsecase.UpdatePost(id, userID, req.Title, req.Content)
+		post, err := ph.postUsecase.UpdatePost(id, userID, req.Title, req.Content, req.AppURL)
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
@@ -139,8 +159,42 @@ func (ph *postHandler) UpdatePost() echo.HandlerFunc {
 		res := responsePost{
 			ID:        post.ID,
 			UserID:    post.UserID,
-			Title:     post.Title,
-			Content:   post.Content,
+			Title:     string(post.Title),
+			Content:   string(post.Content),
+			Image:     post.Image,
+			AppURL:    string(post.AppURL),
+			CreatedAt: post.CreatedAt,
+			UpdatedAt: post.UpdatedAt,
+		}
+
+		return c.JSON(http.StatusOK, res)
+	}
+}
+
+func (ph *postHandler) UploadPostImage() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		id := c.Param("id")
+
+		userID := GetUserIDFromToken(c)
+
+		file, err := c.FormFile("file")
+		if err != nil {
+			return err
+		}
+		image, err := uploadImage(file, id)
+		
+		post, err := ph.postUsecase.UpdatePostImage(id, userID, image)
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, err.Error())
+		}
+
+		res := responsePost{
+			ID:        post.ID,
+			UserID:    post.UserID,
+			Title:     string(post.Title),
+			Content:   string(post.Content),
+			Image:     post.Image,
+			AppURL:    string(post.AppURL),
 			CreatedAt: post.CreatedAt,
 			UpdatedAt: post.UpdatedAt,
 		}
@@ -151,18 +205,39 @@ func (ph *postHandler) UpdatePost() echo.HandlerFunc {
 
 func (ph *postHandler) DeletePost() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		id, err := strconv.Atoi(c.Param("id"))
-		if err != nil {
-			return c.JSON(http.StatusBadRequest, err.Error())
-		}
+		id := c.Param("id")
 
 		userID := GetUserIDFromToken(c)
 
-		err = ph.postUsecase.DeletePost(id, userID)
+		err := ph.postUsecase.DeletePost(id, userID)
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
 
 		return c.JSON(http.StatusNoContent, nil)
 	}
+}
+
+func uploadImage(file *multipart.FileHeader, id string) (string, error) {
+	src, err := file.Open()
+	if err != nil {
+		return "", err
+	}
+	defer src.Close()
+
+	fileModel := strings.Split(file.Filename, ".")
+	fileName := "post_" + id + "." + fileModel[1]
+	dst, err := os.Create(fileName)
+	if err != nil {
+		return "", err
+	}
+	defer dst.Close()
+
+	if _, err = io.Copy(dst, src); err != nil {
+		return "", err
+	}
+
+	image := "http://localhost:8080/static/" + fileName
+
+	return image, nil
 }

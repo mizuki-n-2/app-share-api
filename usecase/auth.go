@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"app-share-api/domain/repository"
-	"app-share-api/domain/model/user"
+	"app-share-api/domain/model"
 
 	"os"
 	"time"
@@ -25,26 +25,26 @@ func NewAuthUsecase(userRepository repository.UserRepository) AuthUsecase {
 }
 
 type MyCustomClaims struct {
-	UserID int `json:"user_id"`
+	UserID string `json:"user_id"`
 	jwt.StandardClaims
 }
 
 func (au *authUsecase) Login(email, password string) (string, error) {
-	newEmail, err := user.NewEmail(email)
+	userEmail, err := model.NewUserEmail(email)
 	if err != nil {
 		return "", err
 	}
-	user, err := au.userRepository.FindByEmail(*newEmail)
-	if err != nil {
-		return "", err
-	}
-
-	err = user.Password.Compare(password)
+	user, err := au.userRepository.FindByEmail(userEmail)
 	if err != nil {
 		return "", err
 	}
 
-	token, err := CreateToken(user.ID)
+	err = user.ComparePassword(password)
+	if err != nil {
+		return "", err
+	}
+
+	token, err := createToken(user.ID)
 	if err != nil {
 		return "", err
 	}
@@ -52,13 +52,13 @@ func (au *authUsecase) Login(email, password string) (string, error) {
 	return token, nil
 }
 
-func CreateToken(userID int) (string, error) {
+func createToken(userID string) (string, error) {
 	signingKey := []byte(os.Getenv("JWT_SIGNING_KEY"))
 
 	claims := MyCustomClaims{
 		userID,
 		jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Hour * 72).Unix(),
+			ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
 			Issuer:    "app_share",
 		},
 	}

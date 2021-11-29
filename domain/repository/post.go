@@ -1,12 +1,12 @@
 package repository
 
 import (
-	"app-share-api/domain/model/post"
+	"app-share-api/domain/model"
 )
 
 type PostRepository interface {
-	Store(post *post.Post) (*post.Post, error)
-	FindByID(ID int) (*post.Post, error)
-	FindAll() ([]*post.Post, error)
-	Delete(ID int) error
+	Store(post *model.Post) (*model.Post, error)
+	FindByID(ID string) (*model.Post, error)
+	Update(post *model.Post) (*model.Post, error)
+	Delete(ID string) error
 }

@@ -1,11 +1,11 @@
 package repository
 
 import (
-	"app-share-api/domain/model/like"
+	"app-share-api/domain/model"
 )
 
 type LikeRepository interface {
-	Store(like *like.Like) (*like.Like, error)
-	FindByID(ID int) (*like.Like, error)
-	Delete(ID int) error
+	Store(like *model.Like) (*model.Like, error)
+	FindByID(ID string) (*model.Like, error)
+	Delete(ID string) error
 }

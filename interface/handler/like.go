@@ -25,23 +25,29 @@ func NewLikeHandler(likeUsecase usecase.LikeUsecase) LikeHandler {
 	}
 }
 
+type requestLike struct {
+	TargetID string `json:"target_id"`
+	TargetType string `json:"target_type"`
+}
+
 type responseLike struct {
-	ID        int       `json:"id"`
-	UserID    int       `json:"user_id"`
-	PostID    int       `json:"post_id"`
-	CreatedAt time.Time `json:"created_at"`
+	ID         string    `json:"id"`
+	UserID     string    `json:"user_id"`
+	TargetID   string    `json:"target_id"`
+	TargetType string    `json:"target_type"`
+	CreatedAt  time.Time `json:"created_at"`
 }
 
 func (lh *likeHandler) Like() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		postID, err := strconv.Atoi(c.Param("post_id"))
-		if err != nil {
+		var req requestLike
+		if err := c.Bind(&req); err != nil {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
 
 		userID := GetUserIDFromToken(c)
 
-		like, err := lh.likeUsecase.LikePost(userID, postID)
+		like, err := lh.likeUsecase.Like(userID, req.TargetID, req.TargetType)
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
@@ -49,7 +55,8 @@ func (lh *likeHandler) Like() echo.HandlerFunc {
 		res := responseLike{
 			ID:        like.ID,
 			UserID:    like.UserID,
-			PostID:    like.PostID,
+			TargetID:  like.TargetID,
+			TargetType: string(like.TargetType),
 			CreatedAt: like.CreatedAt,
 		}
 
@@ -59,19 +66,11 @@ func (lh *likeHandler) Like() echo.HandlerFunc {
 
 func (lh *likeHandler) Unlike() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		id, err := strconv.Atoi(c.Param("id"))
-		if err != nil {
-			return c.JSON(http.StatusBadRequest, err.Error())
-		}
-
-		postID, err := strconv.Atoi(c.Param("post_id"))
-		if err != nil {
-			return c.JSON(http.StatusBadRequest, err.Error())
-		}
+		id := c.Param("id")
 
 		userID := GetUserIDFromToken(c)
 
-		err = lh.likeUsecase.UnlikePost(id, userID, postID)
+		err := lh.likeUsecase.Unlike(id, userID)
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}

@@ -1,18 +1,19 @@
 package usecase
 
 import (
-	"app-share-api/domain/model/post"
+	"app-share-api/domain/model"
 	"app-share-api/domain/repository"
 
 	"errors"
 )
 
 type PostUsecase interface {
-	CreatePost(userID int, title, content string) (*post.Post, error)
-	GetPost(ID int) (*post.Post, error)
-	GetAllPosts() ([]*post.Post, error)
-	UpdatePost(ID, userID int, title, content string) (*post.Post, error)
-	DeletePost(ID, userID int) error
+	CreatePost(userID, title, content, image, appURL string) (*model.Post, error)
+	GetPost(ID string) (*model.Post, error)
+	GetAllPosts() ([]*model.Post, error)
+	UpdatePost(ID, userID, title, content, appURL string) (*model.Post, error)
+	UpdatePostImage(ID, userID, image string) (*model.Post, error)
+	DeletePost(ID, userID string) error
 }
 
 type postUsecase struct {
@@ -25,8 +26,8 @@ func NewPostUsecase(postRepository repository.PostRepository) PostUsecase {
 	}
 }
 
-func (pu *postUsecase) CreatePost(userID int, title, content string) (*post.Post, error) {
-	post, err := post.NewPost(userID, title, content)
+func (pu *postUsecase) CreatePost(userID, title, content, image, appURL string) (*model.Post, error) {
+	post, err := model.NewPost(userID, title, content, image, appURL)
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +40,7 @@ func (pu *postUsecase) CreatePost(userID int, title, content string) (*post.Post
 	return createdPost, nil
 }
 
-func (pu *postUsecase) GetPost(ID int) (*post.Post, error) {
+func (pu *postUsecase) GetPost(ID string) (*model.Post, error) {
 	post, err := pu.postRepository.FindByID(ID)
 	if err != nil {
 		return nil, err
@@ -48,7 +49,7 @@ func (pu *postUsecase) GetPost(ID int) (*post.Post, error) {
 	return post, nil
 }
 
-func (pu *postUsecase) GetAllPosts() ([]*post.Post, error) {
+func (pu *postUsecase) GetAllPosts() ([]*model.Post, error) {
 	posts, err := pu.postRepository.FindAll()
 	if err != nil {
 		return nil, err
@@ -57,19 +58,15 @@ func (pu *postUsecase) GetAllPosts() ([]*post.Post, error) {
 	return posts, nil
 }
 
-func (pu *postUsecase) UpdatePost(ID, userID int, title, content string) (*post.Post, error) {
+func (pu *postUsecase) UpdatePost(ID, userID, title, content, appURL string) (*model.Post, error) {
 	post, err := pu.postRepository.FindByID(ID)
 	if err != nil {
 		return nil, err
 	}
 
-	if post.UserID != userID {
-		return nil, errors.New("権限がありません")
-	}
+	post.Update(userID, title, content, appURL)
 
-	post.Update(title, content)
-
-	updatedPost, err := pu.postRepository.Store(post)
+	updatedPost, err := pu.postRepository.Update(post)
 	if err != nil {
 		return nil, err
 	}
@@ -77,12 +74,29 @@ func (pu *postUsecase) UpdatePost(ID, userID int, title, content string) (*post.
 	return updatedPost, nil
 }
 
-func (pu *postUsecase) DeletePost(ID, userID int) error {
+func (pu *postUsecase) UpdatePostImage(ID, userID, image string) (*model.Post, error) {
+	post, err := pu.postRepository.FindByID(ID)
+	if err != nil {
+		return nil, err
+	}
+
+	post.UpdateImage(userID, image)
+
+	updatedPost, err := pu.postRepository.Update(post)
+	if err != nil {
+		return nil, err
+	}
+
+	return updatedPost, nil
+}
+
+func (pu *postUsecase) DeletePost(ID, userID string) error {
 	post, err := pu.postRepository.FindByID(ID)
 	if err != nil {
 		return err
 	}
 
+	// これはここでいいのか(？)
 	if post.UserID != userID {
 		return errors.New("権限がありません")
 	}
