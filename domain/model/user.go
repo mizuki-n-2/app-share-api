@@ -12,7 +12,7 @@ import (
 type User struct {
 	ID        string       `json:"id"`
 	Name      UserName     `json:"name" gorm:"not null;type:varchar(20)"`
-	Email     UserEmail    `json:"email" gorm:"unique_index"`
+	Email     UserEmail    `json:"email" gorm:"unique_index;not null"`
 	Password  UserPassword `json:"password" gorm:"not null"`
 	Avatar    string       `json:"avatar"`
 	Bio       UserBio      `json:"bio" gorm:"size:255"`
@@ -48,7 +48,7 @@ func NewUser(name, email, password string) (*User, error) {
 	}
 
 	user := &User{
-		ID:       userID,
+		UUID:     userID,
 		Name:     userName,
 		Email:    userEmail,
 		Password: userPassword,
