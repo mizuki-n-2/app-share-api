@@ -26,10 +26,7 @@ func InitDB() *gorm.DB {
 		panic(err)
 	}
 
-	db.AutoMigrate(model.Post{})
-	db.AutoMigrate(model.User{})
-	db.AutoMigrate(model.Like{})
-	db.AutoMigrate(model.Comment{})
+	db.AutoMigrate(model.Post{}, model.User{}, model.Comment{}, model.Like{})
 
 	return db
 }

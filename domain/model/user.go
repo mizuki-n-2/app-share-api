@@ -48,7 +48,7 @@ func NewUser(name, email, password string) (*User, error) {
 	}
 
 	user := &User{
-		UUID:     userID,
+		ID:     userID,
 		Name:     userName,
 		Email:    userEmail,
 		Password: userPassword,
