@@ -182,7 +182,11 @@ func (ph *postHandler) UploadPostImage() echo.HandlerFunc {
 		if err != nil {
 			return err
 		}
+		
 		image, err := uploadImage(file, id)
+		if err != nil {
+			return err
+		}
 		
 		post, err := ph.postUsecase.UpdatePostImage(id, userID, image)
 		if err != nil {

@@ -12,7 +12,7 @@ import (
 type LikeUsecase interface {
 	Like(userID, targetID, targetType string) (*model.Like, error)
 	Unlike(ID, userID string) error
-	GetLikes(targetID, targetType string) ([]*dto.Like, error)
+	GetLikes(targetID string) ([]*dto.Like, error)
 }
 
 type likeUsecase struct {
@@ -60,8 +60,8 @@ func (lu *likeUsecase) Unlike(ID, userID string) error {
 	return nil
 }
 
-func (lu *likeUsecase) GetLikes(targetID, targetType string) ([]*dto.Like, error) {
-	likes, err := lu.likeQueryService.GetLikesByTargetID(targetID, targetType)
+func (lu *likeUsecase) GetLikes(targetID string) ([]*dto.Like, error) {
+	likes, err := lu.likeQueryService.GetLikesByTargetID(targetID)
 	if err != nil {
 		return nil, err
 	}

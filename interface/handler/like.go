@@ -81,10 +81,9 @@ func (lh *likeHandler) Unlike() echo.HandlerFunc {
 
 func (lh *likeHandler) GetLikes() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		targetID := c.Param("target_id")
-		targetType := c.Param("target_type")
+		targetID := c.QueryParam("target_id")
 
-		likes, err := lh.likeUsecase.GetLikes(targetID, targetType)
+		likes, err := lh.likeUsecase.GetLikes(targetID)
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
