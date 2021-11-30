@@ -2,8 +2,8 @@ package usecase
 
 import (
 	"app-share-api/domain/model"
-	"app-share-api/domain/query"
-	"app-share-api/domain/query/dto"
+	"app-share-api/domain/queryservice"
+	"app-share-api/domain/queryservice/dto"
 	"app-share-api/domain/repository"
 
 	"errors"
@@ -18,10 +18,10 @@ type CommentUsecase interface {
 
 type commentUsecase struct {
 	commentRepository repository.CommentRepository
-	commentQueryService query.CommentQueryService
+	commentQueryService queryservice.CommentQueryService
 }
 
-func NewCommentUsecase(commentRepository repository.CommentRepository, commentQueryService query.CommentQueryService) CommentUsecase {
+func NewCommentUsecase(commentRepository repository.CommentRepository, commentQueryService queryservice.CommentQueryService) CommentUsecase {
 	return &commentUsecase{
 		commentRepository: commentRepository,
 		commentQueryService: commentQueryService,

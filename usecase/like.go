@@ -2,8 +2,8 @@ package usecase
 
 import (
 	"app-share-api/domain/model"
-	"app-share-api/domain/query"
-	"app-share-api/domain/query/dto"
+	"app-share-api/domain/queryservice"
+	"app-share-api/domain/queryservice/dto"
 	"app-share-api/domain/repository"
 
 	"errors"
@@ -17,10 +17,10 @@ type LikeUsecase interface {
 
 type likeUsecase struct {
 	likeRepository repository.LikeRepository
-	likeQueryService query.LikeQueryService
+	likeQueryService queryservice.LikeQueryService
 }
 
-func NewLikeUsecase(likeRepository repository.LikeRepository, likeQueryService query.LikeQueryService) LikeUsecase {
+func NewLikeUsecase(likeRepository repository.LikeRepository, likeQueryService queryservice.LikeQueryService) LikeUsecase {
 	return &likeUsecase{
 		likeRepository: likeRepository,
 		likeQueryService: likeQueryService,

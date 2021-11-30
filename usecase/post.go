@@ -2,8 +2,8 @@ package usecase
 
 import (
 	"app-share-api/domain/model"
-	"app-share-api/domain/query"
-	"app-share-api/domain/query/dto"
+	"app-share-api/domain/queryservice"
+	"app-share-api/domain/queryservice/dto"
 	"app-share-api/domain/repository"
 
 	"errors"
@@ -22,10 +22,10 @@ type PostUsecase interface {
 
 type postUsecase struct {
 	postRepository repository.PostRepository
-	postQueryService query.PostQueryService
+	postQueryService queryservice.PostQueryService
 }
 
-func NewPostUsecase(postRepository repository.PostRepository, postQueryService query.PostQueryService) PostUsecase {
+func NewPostUsecase(postRepository repository.PostRepository, postQueryService queryservice.PostQueryService) PostUsecase {
 	return &postUsecase{
 		postRepository: postRepository,
 		postQueryService: postQueryService,

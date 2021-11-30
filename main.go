@@ -9,7 +9,7 @@ import (
 
 	"app-share-api/infra"
 	"app-share-api/infra/repositoryImpl"
-	"app-share-api/infra/queryImpl"
+	"app-share-api/infra/queryserviceImpl"
 	"app-share-api/interface/handler"
 	"app-share-api/usecase"
 )
@@ -30,22 +30,22 @@ func main() {
 	e.Static("/", "static")
 
 	postRepository := repositoryImpl.NewPostRepository(db)
-	postQueryService := queryImpl.NewPostQueryService(db)
+	postQueryService := queryserviceImpl.NewPostQueryService(db)
 	postUsecase := usecase.NewPostUsecase(postRepository, postQueryService)
 	postHandler := handler.NewPostHandler(postUsecase)
 
 	likeRepository := repositoryImpl.NewLikeRepository(db)
-	likeQueryService := queryImpl.NewLikeQueryService(db)
+	likeQueryService := queryserviceImpl.NewLikeQueryService(db)
 	likeUsecase := usecase.NewLikeUsecase(likeRepository, likeQueryService)
 	likeHandler := handler.NewLikeHandler(likeUsecase)
 
 	commentRepository := repositoryImpl.NewCommentRepository(db)
-	commentQueryService := queryImpl.NewCommentQueryService(db)
+	commentQueryService := queryserviceImpl.NewCommentQueryService(db)
 	commentUsecase := usecase.NewCommentUsecase(commentRepository, commentQueryService)
 	commentHandler := handler.NewCommentHandler(commentUsecase)
 
 	userRepository := repositoryImpl.NewUserRepository(db)
-	userQueryService := queryImpl.NewUserQueryService(db)
+	userQueryService := queryserviceImpl.NewUserQueryService(db)
 	userUsecase := usecase.NewUserUsecase(userRepository, userQueryService)
 	userHandler := handler.NewUserHandler(userUsecase)
 

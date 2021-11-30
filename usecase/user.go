@@ -3,8 +3,8 @@ package usecase
 import (
 	"app-share-api/domain/model"
 	"app-share-api/domain/repository"
-	"app-share-api/domain/query"
-	"app-share-api/domain/query/dto"
+	"app-share-api/domain/queryservice"
+	"app-share-api/domain/queryservice/dto"
 )
 
 type UserUsecase interface {
@@ -17,10 +17,10 @@ type UserUsecase interface {
 
 type userUsecase struct {
 	userRepository repository.UserRepository
-	userQueryService query.UserQueryService
+	userQueryService queryservice.UserQueryService
 }
 
-func NewUserUsecase(userRepository repository.UserRepository, userQueryService query.UserQueryService) UserUsecase {
+func NewUserUsecase(userRepository repository.UserRepository, userQueryService queryservice.UserQueryService) UserUsecase {
 	return &userUsecase{
 		userRepository: userRepository,
 		userQueryService: userQueryService,
