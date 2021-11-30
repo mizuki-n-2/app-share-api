@@ -2,6 +2,8 @@ package usecase
 
 import (
 	"app-share-api/domain/model"
+	"app-share-api/domain/query"
+	"app-share-api/domain/query/dto"
 	"app-share-api/domain/repository"
 
 	"errors"
@@ -9,18 +11,20 @@ import (
 
 type CommentUsecase interface {
 	CreateComment(userID, postID, content string) (*model.Comment, error)
-	GetComments(postID string) ([]*model.Comment, error)
 	UpdateComment(ID, userID, content string) (*model.Comment, error)
 	DeleteComment(ID, userID string) error
+	GetComments(postID string) ([]*dto.Comment, error)
 }
 
 type commentUsecase struct {
 	commentRepository repository.CommentRepository
+	commentQueryService query.CommentQueryService
 }
 
-func NewCommentUsecase(commentRepository repository.CommentRepository) CommentUsecase {
+func NewCommentUsecase(commentRepository repository.CommentRepository, commentQueryService query.CommentQueryService) CommentUsecase {
 	return &commentUsecase{
 		commentRepository: commentRepository,
+		commentQueryService: commentQueryService,
 	}
 }
 
@@ -36,15 +40,6 @@ func (cu *commentUsecase) CreateComment(userID, postID, content string) (*model.
 	}
 
 	return createdComment, nil
-}
-
-func (cu *commentUsecase) GetComments(postID string) ([]*model.Comment, error) {
-	comments, err := cu.commentRepository.FindByPostID(postID)
-	if err != nil {
-		return nil, err
-	}
-
-	return comments, nil
 }
 
 func (cu *commentUsecase) UpdateComment(ID, userID, content string) (*model.Comment, error) {
@@ -84,4 +79,13 @@ func (cu *commentUsecase) DeleteComment(ID, userID string) error {
 	}
 
 	return nil
+}
+
+func (cu *commentUsecase) GetComments(postID string) ([]*dto.Comment, error) {
+	comments, err := cu.commentQueryService.GetCommentsByPostID(postID)
+	if err != nil {
+		return nil, err
+	}
+
+	return comments, nil
 }

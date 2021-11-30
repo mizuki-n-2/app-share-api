@@ -4,7 +4,6 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 
@@ -12,12 +11,14 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
+	"mime/multipart"
 )
 
 type PostHandler interface {
 	CreatePost() echo.HandlerFunc
 	GetPost() echo.HandlerFunc
-	GetAllPosts() echo.HandlerFunc
+	GetPosts() echo.HandlerFunc
+	GetLikePosts() echo.HandlerFunc
 	UpdatePost() echo.HandlerFunc
 	UploadPostImage() echo.HandlerFunc
 	DeletePost() echo.HandlerFunc
@@ -102,41 +103,41 @@ func (ph *postHandler) GetPost() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
 
-		res := responsePost{
-			ID:        post.ID,
-			UserID:    post.UserID,
-			Title:     string(post.Title),
-			Content:   string(post.Content),
-			Image:     post.Image,
-			AppURL:    string(post.AppURL),
-			CreatedAt: post.CreatedAt,
-			UpdatedAt: post.UpdatedAt,
-		}
-
-		return c.JSON(http.StatusOK, res)
+		return c.JSON(http.StatusOK, post)
 	}
 }
 
-func (ph *postHandler) GetAllPosts() echo.HandlerFunc {
+func (ph *postHandler) GetPosts() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		posts, err := ph.postUsecase.GetAllPosts()
+		userID := c.QueryParam("user_id")
+		if userID != "" {
+			posts, err := ph.postUsecase.GetPostsByUserID(userID)
+			if err != nil {
+				return c.JSON(http.StatusBadRequest, err.Error())
+			}
+
+			return c.JSON(http.StatusOK, posts)
+		} else {
+			posts, err := ph.postUsecase.GetAllPosts()
+			if err != nil {
+				return c.JSON(http.StatusBadRequest, err.Error())
+			}
+
+			return c.JSON(http.StatusOK, posts)
+		}
+	}
+}
+
+func (ph *postHandler) GetLikePosts() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		userID := c.QueryParam("user_id")
+
+		posts, err := ph.postUsecase.GetLikePosts(userID)
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
 
-		res := []responsePost{}
-		for _, post := range posts {
-			res = append(res, responsePost{
-				ID:        post.ID,
-				UserID:    post.UserID,
-				Title:     post.Title,
-				Content:   post.Content,
-				CreatedAt: post.CreatedAt,
-				UpdatedAt: post.UpdatedAt,
-			})
-		}
-
-		return c.JSON(http.StatusOK, res)
+		return c.JSON(http.StatusOK, posts)
 	}
 }
 

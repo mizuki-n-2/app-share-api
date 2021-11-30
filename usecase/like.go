@@ -2,6 +2,8 @@ package usecase
 
 import (
 	"app-share-api/domain/model"
+	"app-share-api/domain/query"
+	"app-share-api/domain/query/dto"
 	"app-share-api/domain/repository"
 
 	"errors"
@@ -10,15 +12,18 @@ import (
 type LikeUsecase interface {
 	Like(userID, targetID, targetType string) (*model.Like, error)
 	Unlike(ID, userID string) error
+	GetLikes(targetID, targetType string) ([]*dto.Like, error)
 }
 
 type likeUsecase struct {
 	likeRepository repository.LikeRepository
+	likeQueryService query.LikeQueryService
 }
 
-func NewLikeUsecase(likeRepository repository.LikeRepository) LikeUsecase {
+func NewLikeUsecase(likeRepository repository.LikeRepository, likeQueryService query.LikeQueryService) LikeUsecase {
 	return &likeUsecase{
 		likeRepository: likeRepository,
+		likeQueryService: likeQueryService,
 	}
 }
 
@@ -53,4 +58,13 @@ func (lu *likeUsecase) Unlike(ID, userID string) error {
 	}
 
 	return nil
+}
+
+func (lu *likeUsecase) GetLikes(targetID, targetType string) ([]*dto.Like, error) {
+	likes, err := lu.likeQueryService.GetLikesByTargetID(targetID, targetType)
+	if err != nil {
+		return nil, err
+	}
+
+	return likes, nil
 }

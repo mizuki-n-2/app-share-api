@@ -1,11 +1,11 @@
 package handler
 
 import (
+	"io"
 	"net/http"
+	"os"
 	"strings"
 	"time"
-	"os"
-	"io"
 
 	"app-share-api/usecase"
 
@@ -17,6 +17,7 @@ type UserHandler interface {
 	UpdateUser() echo.HandlerFunc
 	UploadUserAvatar() echo.HandlerFunc
 	GetUser() echo.HandlerFunc
+	GetAllUsers() echo.HandlerFunc
 }
 
 type userHandler struct {
@@ -157,16 +158,17 @@ func (uh *userHandler) GetUser() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
 
-		res := responseUser{
-			ID:        user.ID,
-			Name:      string(user.Name),
-			Email:     string(user.Email),
-			Avatar:    user.Avatar,
-			Bio:       string(user.Bio),
-			CreatedAt: user.CreatedAt,
-			UpdatedAt: user.UpdatedAt,
+		return c.JSON(http.StatusOK, user)
+	}
+}
+
+func (uh *userHandler) GetAllUsers() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		users, err := uh.userUsecase.GetAllUsers()
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, err.Error())
 		}
 
-		return c.JSON(http.StatusOK, res)
+		return c.JSON(http.StatusOK, users)
 	}
 }

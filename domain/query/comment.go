@@ -1,9 +1,6 @@
 package query
 
-import (
-	"app-share-api/domain/model"
-)
-
+import "app-share-api/domain/query/dto"
 type CommentQueryService interface {
-	FindByPostID(postID string) ([]model.Comment, error)
+	GetCommentsByPostID(postID string) ([]*dto.Comment, error)
 }

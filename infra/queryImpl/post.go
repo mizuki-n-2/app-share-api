@@ -1,24 +1,15 @@
 package queryImpl
 
 import (
-	"app-share-api/infra"
-	"app-share-api/domain/model"
+	"gorm.io/gorm"
+
 	"app-share-api/domain/query"
 )
 
-type postQueryService struct {}
-
-func NewPostQueryService() query.PostQueryService {
-	return &postQueryService{}
+type postQueryService struct {
+	db *gorm.DB
 }
 
-func (pq *postQueryService) FindAll() ([]model.Post, error) {
-	db := infra.GetDB()
-
-	var posts []model.Post
-	if err := db.Find(&posts).Error; err != nil {
-		return nil, err
-	}
-
-	return posts, nil
+func NewPostQueryService(db *gorm.DB) query.PostQueryService {
+	return &postQueryService{db: db}
 }

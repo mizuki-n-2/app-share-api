@@ -2,6 +2,8 @@ package usecase
 
 import (
 	"app-share-api/domain/model"
+	"app-share-api/domain/query"
+	"app-share-api/domain/query/dto"
 	"app-share-api/domain/repository"
 
 	"errors"
@@ -9,20 +11,24 @@ import (
 
 type PostUsecase interface {
 	CreatePost(userID, title, content, image, appURL string) (*model.Post, error)
-	GetPost(ID string) (*model.Post, error)
-	GetAllPosts() ([]*model.Post, error)
 	UpdatePost(ID, userID, title, content, appURL string) (*model.Post, error)
 	UpdatePostImage(ID, userID, image string) (*model.Post, error)
 	DeletePost(ID, userID string) error
+	GetPost(ID string) (*dto.Post, error)
+	GetPostsByUserID(userID string) ([]*dto.Post, error)
+	GetLikePosts(userID string) ([]*dto.Post, error)
+	GetAllPosts() ([]*dto.Post, error)
 }
 
 type postUsecase struct {
 	postRepository repository.PostRepository
+	postQueryService query.PostQueryService
 }
 
-func NewPostUsecase(postRepository repository.PostRepository) PostUsecase {
+func NewPostUsecase(postRepository repository.PostRepository, postQueryService query.PostQueryService) PostUsecase {
 	return &postUsecase{
 		postRepository: postRepository,
+		postQueryService: postQueryService,
 	}
 }
 
@@ -38,24 +44,6 @@ func (pu *postUsecase) CreatePost(userID, title, content, image, appURL string) 
 	}
 
 	return createdPost, nil
-}
-
-func (pu *postUsecase) GetPost(ID string) (*model.Post, error) {
-	post, err := pu.postRepository.FindByID(ID)
-	if err != nil {
-		return nil, err
-	}
-
-	return post, nil
-}
-
-func (pu *postUsecase) GetAllPosts() ([]*model.Post, error) {
-	posts, err := pu.postRepository.FindAll()
-	if err != nil {
-		return nil, err
-	}
-
-	return posts, nil
 }
 
 func (pu *postUsecase) UpdatePost(ID, userID, title, content, appURL string) (*model.Post, error) {
@@ -107,4 +95,40 @@ func (pu *postUsecase) DeletePost(ID, userID string) error {
 	}
 
 	return nil
+}
+
+func (pu *postUsecase) GetAllPosts() ([]*dto.Post, error) {
+	posts, err := pu.postQueryService.GetAllPosts()
+	if err != nil {
+		return nil, err
+	}
+
+	return posts, nil
+}
+
+func (pu *postUsecase) GetPost(ID string) (*dto.Post, error) {
+	post, err := pu.postQueryService.GetPostByID(ID)
+	if err != nil {
+		return nil, err
+	}
+
+	return post, nil
+}
+
+func (pu *postUsecase) GetPostsByUserID(userID string) ([]*dto.Post, error) {
+	posts, err := pu.postQueryService.GetPostsByUserID(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	return posts, nil
+}
+
+func (pu *postUsecase) GetLikePosts(userID string) ([]*dto.Post, error) {
+	posts, err := pu.postQueryService.GetLikePostsByUserID(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	return posts, nil
 }

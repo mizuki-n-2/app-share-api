@@ -2,7 +2,6 @@ package handler
 
 import (
 	"net/http"
-	"strconv"
 	"time"
 
 	"app-share-api/usecase"
@@ -13,6 +12,7 @@ import (
 type LikeHandler interface {
 	Like() echo.HandlerFunc
 	Unlike() echo.HandlerFunc
+	GetLikes() echo.HandlerFunc
 }
 
 type likeHandler struct {
@@ -76,5 +76,19 @@ func (lh *likeHandler) Unlike() echo.HandlerFunc {
 		}
 
 		return c.JSON(http.StatusNoContent, nil)
+	}
+}
+
+func (lh *likeHandler) GetLikes() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		targetID := c.Param("target_id")
+		targetType := c.Param("target_type")
+
+		likes, err := lh.likeUsecase.GetLikes(targetID, targetType)
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, err.Error())
+		}
+
+		return c.JSON(http.StatusOK, likes)
 	}
 }

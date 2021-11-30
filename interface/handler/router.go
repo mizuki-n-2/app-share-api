@@ -12,9 +12,12 @@ func InitRouting(e *echo.Echo, postHandler PostHandler, likeHandler LikeHandler,
 	// 認証なし
 	api.POST("/users", userHandler.CreateUser())
 	api.GET("/users/:id", userHandler.GetUser())
+	api.GET("/users", userHandler.GetAllUsers())
 	api.POST("/login", authHandler.Login())
-	api.GET("/posts", postHandler.GetAllPosts())
+	api.GET("/posts", postHandler.GetPosts())
+	api.GET("/posts/like", postHandler.GetLikePosts())
 	api.GET("/posts/:id", postHandler.GetPost())
+	api.GET("/likes", likeHandler.GetLikes())
 	api.GET("/comments", commentHandler.GetComments())
 
 	// 認証あり

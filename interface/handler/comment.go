@@ -2,7 +2,6 @@ package handler
 
 import (
 	"net/http"
-	"strconv"
 	"time"
 
 	"app-share-api/usecase"
@@ -70,29 +69,14 @@ func (ch *commentHandler) CreateComment() echo.HandlerFunc {
 
 func (ch *commentHandler) GetComments() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		postID, err := strconv.Atoi(c.Param("post_id"))
-		if err != nil {
-			return c.JSON(http.StatusBadRequest, err.Error())
-		}
+		postID := c.QueryParam("post_id")
 
 		comments, err := ch.commentUsecase.GetComments(postID)
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
 
-		res := []responseComment{}
-		for _, comment := range comments {
-			res = append(res, responseComment{
-				ID:        comment.ID,
-				UserID:    comment.UserID,
-				PostID:    comment.PostID,
-				Content:   comment.Content,
-				CreatedAt: comment.CreatedAt,
-				UpdatedAt: comment.UpdatedAt,
-			})
-		}
-
-		return c.JSON(http.StatusOK, res)
+		return c.JSON(http.StatusOK, comments)
 	}
 }
 
