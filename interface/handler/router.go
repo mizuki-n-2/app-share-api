@@ -12,7 +12,8 @@ func InitRouting(e *echo.Echo, postHandler PostHandler, likeHandler LikeHandler,
 	// 認証なし
 	api.POST("/users", userHandler.CreateUser())
 	api.GET("/users/:id", userHandler.GetUser())
-	api.GET("/users", userHandler.GetAllUsers())
+	api.GET("/users/rank/like", userHandler.GetRankingLikeUsers())
+	api.GET("/users/rank/post", userHandler.GetRankingPostUsers())
 	api.POST("/login", authHandler.Login())
 	api.GET("/posts", postHandler.GetPosts())
 	api.GET("/posts/like", postHandler.GetLikePosts())

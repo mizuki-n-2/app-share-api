@@ -5,6 +5,14 @@ type User struct {
 	Name          string `json:"name"`
 	Avatar        string `json:"avatar"`
 	Bio           string `json:"bio"`
-	AllLikedCount int    `json:"all_liked_count"`
-	AllPostCount  int    `json:"all_post_count"`
+}
+
+type RankingLikeUser struct {
+	User
+	AllLikedCount int `json:"all_liked_count"`
+}
+
+type RankingPostUser struct {
+	User
+	AllPostsCount int `json:"all_posts_count"`
 }

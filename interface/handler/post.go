@@ -232,7 +232,7 @@ func uploadImage(file *multipart.FileHeader, id string) (string, error) {
 
 	fileModel := strings.Split(file.Filename, ".")
 	fileName := "post_" + id + "." + fileModel[1]
-	dst, err := os.Create(fileName)
+	dst, err := os.Create("static/post/" + fileName)
 	if err != nil {
 		return "", err
 	}
@@ -242,7 +242,7 @@ func uploadImage(file *multipart.FileHeader, id string) (string, error) {
 		return "", err
 	}
 
-	image := "http://localhost:8080/static/" + fileName
+	image := "http://localhost:8080/static/post/" + fileName
 
 	return image, nil
 }

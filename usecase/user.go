@@ -12,7 +12,8 @@ type UserUsecase interface {
 	UpdateUser(ID, name, bio string) (*model.User, error)
 	UpdateUserAvatar(ID, avatar string) (*model.User, error)
 	GetUser(ID string) (*dto.User, error)
-	GetAllUsers() ([]*dto.User, error)
+	GetRankingLikeUsers() ([]*dto.RankingLikeUser, error)
+	GetRankingPostUsers() ([]*dto.RankingPostUser, error)
 }
 
 type userUsecase struct {
@@ -93,8 +94,17 @@ func (uu *userUsecase) GetUser(ID string) (*dto.User, error) {
 	return user, nil
 }
 
-func (uu *userUsecase) GetAllUsers() ([]*dto.User, error) {
-	users, err := uu.userQueryService.GetAllUsers()
+func (uu *userUsecase) GetRankingLikeUsers() ([]*dto.RankingLikeUser, error) {
+	users, err := uu.userQueryService.GetRankingLikeUsers()
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
+func (uu *userUsecase) GetRankingPostUsers() ([]*dto.RankingPostUser, error) {
+	users, err := uu.userQueryService.GetRankingPostUsers()
 	if err != nil {
 		return nil, err
 	}

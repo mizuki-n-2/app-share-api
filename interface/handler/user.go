@@ -17,7 +17,8 @@ type UserHandler interface {
 	UpdateUser() echo.HandlerFunc
 	UploadUserAvatar() echo.HandlerFunc
 	GetUser() echo.HandlerFunc
-	GetAllUsers() echo.HandlerFunc
+	GetRankingLikeUsers() echo.HandlerFunc
+	GetRankingPostUsers() echo.HandlerFunc
 }
 
 type userHandler struct {
@@ -119,7 +120,7 @@ func (uh *userHandler) UploadUserAvatar() echo.HandlerFunc {
 
 		fileModel := strings.Split(file.Filename, ".")
 		fileName := "avatar_" + id + "." + fileModel[1]
-		dst, err := os.Create(fileName)
+		dst, err := os.Create("static/user/" + fileName)
 		if err != nil {
 			return err
 		}
@@ -129,7 +130,7 @@ func (uh *userHandler) UploadUserAvatar() echo.HandlerFunc {
 			return err
 		}
 
-		avatar := "http://localhost:8080/static/" + fileName
+		avatar := "http://localhost:8080/static/user/" + fileName
 		user, err := uh.userUsecase.UpdateUserAvatar(id, avatar)
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, err.Error())
@@ -162,9 +163,20 @@ func (uh *userHandler) GetUser() echo.HandlerFunc {
 	}
 }
 
-func (uh *userHandler) GetAllUsers() echo.HandlerFunc {
+func (uh *userHandler) GetRankingLikeUsers() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		users, err := uh.userUsecase.GetAllUsers()
+		users, err := uh.userUsecase.GetRankingLikeUsers()
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, err.Error())
+		}
+
+		return c.JSON(http.StatusOK, users)
+	}
+}
+
+func (uh *userHandler) GetRankingPostUsers() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		users, err := uh.userUsecase.GetRankingPostUsers()
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
