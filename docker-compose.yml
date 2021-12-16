@@ -1,0 +1,27 @@
+version: '3' # composeファイルのバーション指定
+services:
+  api: # service名
+    build: . # ビルドに使用するDockerfileがあるディレクトリ指定
+    ports:
+      - "8080:8080" # ポート指定
+    tty: true # コンテナの起動永続化
+    volumes:
+      - .:/go/src/app-share-api # マウントディレクトリ指定
+  db:
+    image: mysql:8.0 # 使用するDockerイメージ名
+    ports:
+      - "${DB_PORT}:3306" # ポート指定
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASS}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASS}
+      TZ: ${TZ}
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./db/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+      
+volumes:
+  db-data:
+    driver: local
