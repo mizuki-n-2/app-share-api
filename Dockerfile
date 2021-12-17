@@ -6,3 +6,5 @@ RUN mkdir /go/src/app-share-api
 WORKDIR /go/src/app-share-api
 # ホストのファイルをコンテナの作業ディレクトリに移行
 ADD . /go/src/app-share-api
+
+RUN go get -u github.com/cosmtrek/air

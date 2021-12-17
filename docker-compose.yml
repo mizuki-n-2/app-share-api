@@ -1,7 +1,9 @@
 version: '3' # composeファイルのバーション指定
 services:
   api: # service名
-    build: . # ビルドに使用するDockerfileがあるディレクトリ指定
+    build: 
+      context: . 
+      dockerfile: Dockerfile
     ports:
       - "8080:8080" # ポート指定
     tty: true # コンテナの起動永続化
