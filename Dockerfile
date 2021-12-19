@@ -8,3 +8,5 @@ WORKDIR /go/src/app-share-api
 ADD . /go/src/app-share-api
 
 RUN go get -u github.com/cosmtrek/air
+
+CMD ["air", "-c", ".air.toml"]
