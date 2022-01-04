@@ -1,6 +1,7 @@
 package infra
 
 import (
+	"fmt"
 	"os"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -20,7 +21,7 @@ func InitDB() *gorm.DB {
 		dbName = os.Getenv("DB_NAME")
 	)
 
-	dsn := dbUser + ":" + dbPass + "@tcp(" + dbHost + ":" + dbPort + ")/" + dbName + "?charset=utf8&parseTime=True&loc=Local"
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", dbUser, dbPass, dbHost, dbPort, dbName)
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(err)
