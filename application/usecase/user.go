@@ -3,8 +3,8 @@ package usecase
 import (
 	"app-share-api/domain/model"
 	"app-share-api/domain/repository"
-	"app-share-api/domain/queryservice"
-	"app-share-api/domain/queryservice/dto"
+	"app-share-api/application/queryservice"
+	"app-share-api/application/queryservice/dto"
 )
 
 type UserUsecase interface {

@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"app-share-api/usecase"
+	"app-share-api/application/usecase"
 
 	"github.com/labstack/echo/v4"
 )

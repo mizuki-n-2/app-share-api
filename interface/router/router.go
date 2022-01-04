@@ -1,13 +1,15 @@
-package handler
+package router
 
 import (
 	"os"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+
+	"app-share-api/interface/handler"
 )
 
-func InitRouting(e *echo.Echo, postHandler PostHandler, likeHandler LikeHandler, commentHandler CommentHandler, userHandler UserHandler, authHandler AuthHandler) {
+func NewRouter(e *echo.Echo, postHandler handler.PostHandler, likeHandler handler.LikeHandler, commentHandler handler.CommentHandler, userHandler handler.UserHandler, authHandler handler.AuthHandler) {
 	api := e.Group("/api")
 	// 認証なし
 	api.POST("/users", userHandler.CreateUser())

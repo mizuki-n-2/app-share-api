@@ -3,8 +3,8 @@ package queryserviceImpl
 import (
 	"gorm.io/gorm"
 
-	"app-share-api/domain/queryservice"
-	"app-share-api/domain/queryservice/dto"
+	"app-share-api/application/queryservice"
+	"app-share-api/application/queryservice/dto"
 )
 
 type likeQueryService struct {

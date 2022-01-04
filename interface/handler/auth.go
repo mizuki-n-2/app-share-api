@@ -3,7 +3,7 @@ package handler
 import (
 	"net/http"
 
-	"app-share-api/usecase"
+	"app-share-api/application/usecase"
 
 	"github.com/labstack/echo/v4"
 )

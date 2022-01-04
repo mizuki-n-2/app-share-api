@@ -10,8 +10,9 @@ import (
 	"app-share-api/infra"
 	"app-share-api/infra/repositoryImpl"
 	"app-share-api/infra/queryserviceImpl"
+	"app-share-api/application/usecase"
 	"app-share-api/interface/handler"
-	"app-share-api/usecase"
+	"app-share-api/interface/router"
 )
 
 func main() {
@@ -29,6 +30,7 @@ func main() {
 
 	e.Static("/", "static")
 
+	// TODO: DIコンテナを作成
 	postRepository := repositoryImpl.NewPostRepository(db)
 	postQueryService := queryserviceImpl.NewPostQueryService(db)
 	postUsecase := usecase.NewPostUsecase(postRepository, postQueryService)
@@ -52,6 +54,6 @@ func main() {
 	authUsecase := usecase.NewAuthUsecase(userRepository)
 	authHandler := handler.NewAuthHandler(authUsecase)
 
-	handler.InitRouting(e, postHandler, likeHandler, commentHandler, userHandler, authHandler)
+	router.NewRouter(e, postHandler, likeHandler, commentHandler, userHandler, authHandler)
 	e.Logger.Fatal(e.Start(":8080"))
 }

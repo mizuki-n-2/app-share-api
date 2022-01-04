@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"app-share-api/usecase"
+	"app-share-api/application/usecase"
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"

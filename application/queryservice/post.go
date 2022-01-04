@@ -1,6 +1,6 @@
 package queryservice
 
-import "app-share-api/domain/queryservice/dto"
+import "app-share-api/application/queryservice/dto"
 
 type PostQueryService interface {
 	GetAllPosts() ([]*dto.Post, error)
