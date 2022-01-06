@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -119,8 +120,8 @@ func (uh *userHandler) UploadUserAvatar() echo.HandlerFunc {
 		defer src.Close()
 
 		fileModel := strings.Split(file.Filename, ".")
-		fileName := "avatar_" + id + "." + fileModel[1]
-		dst, err := os.Create("static/user/" + fileName)
+		fileName := fmt.Sprintf("avatar_%s.%s", id, fileModel[1])
+		dst, err := os.Create(fmt.Sprintf("static/user/%s", fileName))
 		if err != nil {
 			return err
 		}
@@ -130,7 +131,7 @@ func (uh *userHandler) UploadUserAvatar() echo.HandlerFunc {
 			return err
 		}
 
-		avatar := "http://localhost:8080/static/user/" + fileName
+		avatar := fmt.Sprintf("%s/%s", os.Getenv("ORIGIN_URL"), fileName)
 		user, err := uh.userUsecase.UpdateUserAvatar(id, avatar)
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, err.Error())
@@ -146,7 +147,7 @@ func (uh *userHandler) UploadUserAvatar() echo.HandlerFunc {
 			UpdatedAt: user.UpdatedAt,
 		}
 
-		return c.JSON(http.StatusCreated, res)
+		return c.JSON(http.StatusOK, res)
 	}
 }
 
