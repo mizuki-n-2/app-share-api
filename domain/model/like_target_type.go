@@ -19,7 +19,7 @@ func CheckType(t string) bool {
 }
 
 func NewLikeTargetType(value string) (LikeTargetType, error) {
-	if CheckType(value) {
+	if !CheckType(value) {
 		return "", errors.New("targetTypeが正しくありません")
 	}
 

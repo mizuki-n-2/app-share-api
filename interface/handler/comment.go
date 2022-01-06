@@ -84,12 +84,14 @@ func (ch *commentHandler) UpdateComment() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		id := c.Param("id")
 
-		// TODO: バリデーション
-		content := c.FormValue("content")
+		var req requestComment
+		if err := c.Bind(&req); err != nil {
+			return c.JSON(http.StatusBadRequest, err.Error())
+		}
 
 		userID := GetUserIDFromToken(c)
 
-		comment, err := ch.commentUsecase.UpdateComment(id, userID, content)
+		comment, err := ch.commentUsecase.UpdateComment(id, userID, req.Content)
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, err.Error())
 		}
