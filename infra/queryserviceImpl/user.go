@@ -39,7 +39,7 @@ func (uqs *userQueryService) GetRankingLikeUsers() ([]*dto.RankingLikeUser, erro
 
 func (uqs *userQueryService) GetRankingPostUsers() ([]*dto.RankingPostUser, error) {
 	var users []*dto.RankingPostUser
-	query := "SELECT users.id, users.name, users.avatar, users.bio, filtered_posts.posts_count AS all_posts_count FROM users LEFT JOIN (SELECT user_id, count(*) AS posts_count FROM posts GROUP BY user_id) AS filtered_posts ON users.id = filtered_posts.user_id"
+	query := "SELECT users.id, users.name, users.avatar, users.bio, filtered_posts.posts_count AS all_posts_count FROM users LEFT JOIN (SELECT user_id, count(*) AS posts_count FROM posts GROUP BY user_id) AS filtered_posts ON users.id = filtered_posts.user_id ORDER BY all_posts_count DESC"
 
 	if err := uqs.db.Raw(query).Scan(&users).Error; err != nil {
 		return nil, err
