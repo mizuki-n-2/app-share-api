@@ -100,7 +100,7 @@ func (uh *userHandler) UpdateUser() echo.HandlerFunc {
 			UpdatedAt: user.UpdatedAt,
 		}
 
-		return c.JSON(http.StatusCreated, res)
+		return c.JSON(http.StatusOK, res)
 	}
 }
 
