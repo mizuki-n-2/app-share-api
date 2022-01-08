@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -9,9 +10,10 @@ import (
 
 	"app-share-api/application/usecase"
 
+	"mime/multipart"
+
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
-	"mime/multipart"
 )
 
 type PostHandler interface {
@@ -59,14 +61,10 @@ func (ph *postHandler) CreatePost() echo.HandlerFunc {
 		content := c.FormValue("content")
 		appURL := c.FormValue("app_url")
 
-		// Multipart form
-		form, err := c.MultipartForm()
+		file, err := c.FormFile("file")
 		if err != nil {
 			return err
 		}
-		files := form.File["files"]
-
-		file := files[0]
 
 		uuid := uuid.NewString()
 		image, err := uploadImage(file, uuid)
@@ -231,8 +229,8 @@ func uploadImage(file *multipart.FileHeader, id string) (string, error) {
 	defer src.Close()
 
 	fileModel := strings.Split(file.Filename, ".")
-	fileName := "post_" + id + "." + fileModel[1]
-	dst, err := os.Create("static/post/" + fileName)
+	fileName := fmt.Sprintf("post_%s.%s", id, fileModel[1])
+	dst, err := os.Create(fmt.Sprintf("static/post/%s", fileName))
 	if err != nil {
 		return "", err
 	}
@@ -242,7 +240,7 @@ func uploadImage(file *multipart.FileHeader, id string) (string, error) {
 		return "", err
 	}
 
-	image := "http://localhost:8080/static/post/" + fileName
+	image := fmt.Sprintf("%s/%s", os.Getenv("ORIGIN_URL"), fileName)
 
 	return image, nil
 }
