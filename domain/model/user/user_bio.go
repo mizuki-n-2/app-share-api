@@ -1,7 +1,7 @@
 package model
 
 import (
-	"errors"
+	"fmt"
 	"unicode/utf8"
 )
 
@@ -9,8 +9,10 @@ import (
 type UserBio string
 
 func NewUserBio(value string) (UserBio, error) {
-	if utf8.RuneCountInString(value) > 255 {
-		return "", errors.New("bioは255文字以下にしてください")
+	MAX_LENGTH_USER_BIO := 255
+
+	if utf8.RuneCountInString(value) > MAX_LENGTH_USER_BIO {
+		return "", fmt.Errorf("bioは%d文字以下にしてください", MAX_LENGTH_USER_BIO)
 	}
 
 	return UserBio(value), nil
