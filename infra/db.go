@@ -6,7 +6,10 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 
-	"app-share-api/domain/model"
+	pm "app-share-api/domain/model/post"
+	um "app-share-api/domain/model/user"
+	cm "app-share-api/domain/model/comment"
+	lm "app-share-api/domain/model/like"
 )
 
 var db *gorm.DB
@@ -27,7 +30,7 @@ func InitDB() *gorm.DB {
 		panic(err)
 	}
 
-	db.AutoMigrate(model.Post{}, model.User{}, model.Comment{}, model.Like{})
+	db.AutoMigrate(pm.Post{}, um.User{}, cm.Comment{}, lm.Like{})
 
 	return db
 }

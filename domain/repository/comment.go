@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"app-share-api/domain/model"
+	"app-share-api/domain/model/comment"
 )
 
 type CommentRepository interface {

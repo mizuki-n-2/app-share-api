@@ -1,12 +1,11 @@
-package test
+package model
 
 import (
 	"testing"
-	"app-share-api/domain/model"
 )
 
 func TestNewUserNameSuccess(t *testing.T) {
-	userName, err := model.NewUserName("test name")
+	userName, err := NewUserName("test name")
 	if err != nil {
 		t.Fatalf("failed test %#v", err)
 	}
@@ -17,7 +16,7 @@ func TestNewUserNameSuccess(t *testing.T) {
 }
 
 func TestNewUserNameFailEmpty(t *testing.T) {
-	_, err := model.NewUserName("")
+	_, err := NewUserName("")
 	if err == nil {
 		t.Fatal("failed test")
 	}
@@ -25,7 +24,7 @@ func TestNewUserNameFailEmpty(t *testing.T) {
 
 // 名前が21文字以上の場合はエラー
 func TestNewUserNameFailTooLong(t *testing.T) {
-	_, err := model.NewUserName("abcdefghijklmnopqrstu")
+	_, err := NewUserName("abcdefghijklmnopqrstu")
 	if err == nil {
 		t.Fatal("failed test")
 	}

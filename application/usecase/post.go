@@ -3,7 +3,7 @@ package usecase
 import (
 	"app-share-api/application/queryservice"
 	"app-share-api/application/queryservice/dto"
-	"app-share-api/domain/model"
+	"app-share-api/domain/model/post"
 	"app-share-api/domain/repository"
 
 	"errors"

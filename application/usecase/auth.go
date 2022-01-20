@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"app-share-api/domain/repository"
-	"app-share-api/domain/model"
+	"app-share-api/domain/model/user"
 
 	"os"
 	"time"

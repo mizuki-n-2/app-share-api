@@ -1,7 +1,7 @@
 package usecase
 
 import (
-	"app-share-api/domain/model"
+	"app-share-api/domain/model/like"
 	"app-share-api/domain/repository"
 	"app-share-api/application/queryservice"
 	"app-share-api/application/queryservice/dto"

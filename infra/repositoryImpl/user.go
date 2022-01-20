@@ -3,7 +3,7 @@ package repositoryImpl
 import (
 	"gorm.io/gorm"
 
-	"app-share-api/domain/model"
+	"app-share-api/domain/model/user"
 	"app-share-api/domain/repository"
 )
 
