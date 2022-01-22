@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestNewUserEmailSuccess(t *testing.T) {
+func TestNewUserEmail_Success(t *testing.T) {
 	SUCCESS_EXAMPLE_USER_EMAIL := "test@example.com"
 
 	userEmail, err := NewUserEmail(SUCCESS_EXAMPLE_USER_EMAIL)
@@ -17,7 +17,7 @@ func TestNewUserEmailSuccess(t *testing.T) {
 	}
 }
 
-func TestNewUserEmailFailEmpty(t *testing.T) {
+func TestNewUserEmail_FailEmpty(t *testing.T) {
 	_, err := NewUserEmail("")
 	if err == nil {
 		t.Fatal("failed test")
@@ -25,7 +25,7 @@ func TestNewUserEmailFailEmpty(t *testing.T) {
 }
 
 // メールアドレスの形式が不正の場合はエラー(@がない)
-func TestNewUserNameFailFormat1(t *testing.T) {
+func TestNewUserName_FailFormat1(t *testing.T) {
 	FAIL_EXAMPLE_USER_EMAIL := "test"
 
 	_, err := NewUserEmail(FAIL_EXAMPLE_USER_EMAIL)
@@ -35,7 +35,7 @@ func TestNewUserNameFailFormat1(t *testing.T) {
 }
 
 // メールアドレスの形式が不正の場合はエラー(@の後ろがない)
-func TestNewUserNameFailFormat2(t *testing.T) {
+func TestNewUserName_FailFormat2(t *testing.T) {
 	FAIL_EXAMPLE_USER_EMAIL := "test@"
 
 	_, err := NewUserEmail(FAIL_EXAMPLE_USER_EMAIL)
@@ -45,7 +45,7 @@ func TestNewUserNameFailFormat2(t *testing.T) {
 }
 
 // メールアドレスの形式が不正の場合はエラー(@の前がない)
-func TestNewUserNameFailFormat3(t *testing.T) {
+func TestNewUserName_FailFormat3(t *testing.T) {
 	FAIL_EXAMPLE_USER_EMAIL := "@com"
 
 	_, err := NewUserEmail(FAIL_EXAMPLE_USER_EMAIL)

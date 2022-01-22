@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestNewUserNameSuccess(t *testing.T) {
+func TestNewUserName_Success(t *testing.T) {
 	SUCCESS_EXAMPLE_USER_NAME := "test name"
 
 	userName, err := NewUserName(SUCCESS_EXAMPLE_USER_NAME)
@@ -17,7 +17,7 @@ func TestNewUserNameSuccess(t *testing.T) {
 	}
 }
 
-func TestNewUserNameFailEmpty(t *testing.T) {
+func TestNewUserName_FailEmpty(t *testing.T) {
 	_, err := NewUserName("")
 	if err == nil {
 		t.Fatal("failed test")
@@ -25,7 +25,7 @@ func TestNewUserNameFailEmpty(t *testing.T) {
 }
 
 // 名前が1文字以下の場合はエラー
-func TestNewUserNameFailTooShort(t *testing.T) {
+func TestNewUserName_FailTooShort(t *testing.T) {
 	FAIL_EXAMPLE_USER_NAME := "a"
 
 	_, err := NewUserName(FAIL_EXAMPLE_USER_NAME)
@@ -35,7 +35,7 @@ func TestNewUserNameFailTooShort(t *testing.T) {
 }
 
 // 名前が21文字以上の場合はエラー
-func TestNewUserNameFailTooLong(t *testing.T) {
+func TestNewUserName_FailTooLong(t *testing.T) {
 	FAIL_EXAMPLE_USER_NAME := "abcdefghijklmnopqrstu"
 
 	_, err := NewUserName(FAIL_EXAMPLE_USER_NAME)

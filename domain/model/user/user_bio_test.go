@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestNewUserBioSuccess(t *testing.T) {
+func TestNewUserBio_Success(t *testing.T) {
 	SUCCESS_EXAMPLE_USER_BIO := "こんにちは。よろしくお願いします！"
 
 	userBio, err := NewUserBio(SUCCESS_EXAMPLE_USER_BIO)
@@ -18,7 +18,7 @@ func TestNewUserBioSuccess(t *testing.T) {
 }
 
 // 自己紹介文が256文字以上の場合はエラー
-func TestNewUserBioFailTooLong(t *testing.T) {
+func TestNewUserBio_FailTooLong(t *testing.T) {
 	FAIL_EXAMPLE_USER_BIO := "こんにちは。よろしくお願いします！こんにちは。よろしくお願いします！こんにちは。よろしくお願いします！こんにちは。よろしくお願いします！こんにちは。よろしくお願いします！こんにちは。よろしくお願いします！こんにちは。よろしくお願いします！こんにちは。よろしくお願いします！こんにちは。よろしくお願いします！こんにちは。よろしくお願いします！こんにちは。よろしくお願いします！こんにちは。よろしくお願いします！こんにちは。よろしくお願いします！こんにちは。よろしくお願いします！こんにちは。よろしくお願いします！！"
 
 	_, err := NewUserBio(FAIL_EXAMPLE_USER_BIO)
