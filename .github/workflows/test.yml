@@ -25,15 +25,6 @@ jobs:
          restore-keys: |
             ${{ runner.os }}-go-
 
-  # buildテスト
-  build:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: build
-        run: go run build ./...
-
   # testを通す
   test:
     needs: setup
