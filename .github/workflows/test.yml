@@ -1,23 +1,45 @@
-name: Test
+name: CI
 
 on: push
 
 jobs:
-  test:
-   name: Test
+  # 共通処理
+  setup:
    runs-on: ubuntu-latest
    steps:
-     - name: Set up Go latest
-       uses: actions/setup-go@v1
+     - name: Set up Go
+       uses: actions/setup-go@v2
        with:
-         go-version: latest 
-         
-     - name: Check out code into the Go module directory
-       uses: actions/checkout@v1
+         go-version: ^1.13   
+     - name: Check out
+       uses: actions/checkout@v2
 
-     - name: Get dependencies
-       run: go get -v -t -d ./...
+     # 処理を高速化するために環境をキャッシュ
+     - name: Cache
+       uses: actions/cache@v2
+       with:
+         path: |
+           ~/.cache/go-build
+           ~/go/pkg/mod
+         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+         restore-keys: |
+            ${{ runner.os }}-go-
 
-     - name: Test code
-       run: go test -v .
-               
+  # buildテスト
+  build:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: build
+        run: go run build ./...
+
+  # testを通す
+  test:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: test
+        run: go test ./... -v
+        
