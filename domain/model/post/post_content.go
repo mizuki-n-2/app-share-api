@@ -1,7 +1,7 @@
 package model
 
 import (
-	"errors"
+	"fmt"
 	"unicode/utf8"
 )
 
@@ -9,8 +9,10 @@ import (
 type PostContent string
 
 func NewPostContent(value string) (PostContent, error) {
-	if utf8.RuneCountInString(value) > 255 {
-		return "", errors.New("contentは255文字以下にしてください")
+	MAX_LENGTH_POST_CONTENT := 255
+
+	if utf8.RuneCountInString(value) > MAX_LENGTH_POST_CONTENT {
+		return "", fmt.Errorf("contentは%d文字以下にしてください", MAX_LENGTH_POST_CONTENT)
 	}
 
 	return PostContent(value), nil
