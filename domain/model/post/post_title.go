@@ -1,7 +1,7 @@
 package model
 
 import (
-	"errors"
+	"fmt"
 	"unicode/utf8"
 )
 
@@ -9,8 +9,11 @@ import (
 type PostTitle string
 
 func NewPostTitle(value string) (PostTitle, error) {
-	if utf8.RuneCountInString(value) < 0 || utf8.RuneCountInString(value) > 100 {
-		return "", errors.New("titleは1文字以上100文字以下にしてください")
+	MIN_LENGTH_POST_TITLE := 1
+	MAX_LENGTH_POST_TITLE := 100
+
+	if utf8.RuneCountInString(value) < MIN_LENGTH_POST_TITLE || utf8.RuneCountInString(value) > MAX_LENGTH_POST_TITLE {
+		return "", fmt.Errorf("titleは%d文字以上%d文字以下にしてください", MIN_LENGTH_POST_TITLE, MAX_LENGTH_POST_TITLE)
 	}
 
 	return PostTitle(value), nil
